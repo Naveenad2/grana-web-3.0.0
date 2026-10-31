@@ -1,0 +1,170 @@
+.section {
+  position: relative;
+  padding: clamp(80px, 10vw, 150px) 0 clamp(70px, 8vw, 120px);
+  background:
+    radial-gradient(rgb(28 20 16 / 0.09) 1.2px, transparent 1.4px) 0 0 / 22px 22px,
+    var(--paper);
+  overflow: hidden;
+}
+
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  flex-wrap: wrap;
+  margin-bottom: clamp(30px, 4vw, 56px);
+}
+
+.title {
+  margin-top: 14px;
+  font-family: var(--ff-display);
+  font-weight: 900;
+  font-stretch: 90%;
+  font-size: clamp(46px, 6.4vw, 104px);
+  line-height: 0.88;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+}
+
+.title :global(.script) {
+  font-size: 0.6em;
+  color: var(--orange-deep);
+  margin-left: 0.1em;
+  display: inline-block;
+  transform: rotate(-6deg) translateY(-0.1em);
+}
+
+.headAside {
+  display: grid;
+  gap: 16px;
+  justify-items: start;
+  max-width: 40ch;
+  font-size: 16.5px;
+  color: rgb(28 20 16 / 0.78);
+}
+
+/* ---------- polaroids ---------- */
+
+.table {
+  position: relative;
+  display: flex;
+  gap: 22px;
+  padding: 10px var(--gutter) 34px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.table::-webkit-scrollbar {
+  display: none;
+}
+
+.polaroid {
+  position: relative;
+  flex: none;
+  width: min(62vw, 250px);
+  padding: 12px 12px 0;
+  background: #fffdf8;
+  box-shadow:
+    0 1px 0 rgb(0 0 0 / 0.04),
+    0 18px 30px -16px rgb(60 25 10 / 0.5);
+  rotate: var(--r);
+  scroll-snap-align: center;
+  user-select: none;
+}
+
+.polaroid::before {
+  content: "";
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  z-index: 2;
+  width: 84px;
+  height: 26px;
+  translate: -50% 0;
+  rotate: calc(var(--r) * -1.4);
+  background: rgb(232 214 170 / 0.72);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.08);
+}
+
+.wide {
+  width: min(80vw, 360px);
+}
+
+.photo {
+  position: relative;
+  aspect-ratio: 4 / 4.6;
+  overflow: hidden;
+  background: var(--sand);
+}
+
+.wide .photo {
+  aspect-ratio: 1.72;
+}
+
+.photo img {
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.polaroid figcaption {
+  display: grid;
+  place-items: center;
+  min-height: 62px;
+  padding: 8px 4px 10px;
+  font-size: 17px;
+  line-height: 1.25;
+  text-align: center;
+  color: var(--brown);
+}
+
+/* desktop: scatter the photos across a table and let people drag them */
+@media (min-width: 1000px) {
+  .table {
+    display: block;
+    width: min(100% - 2 * var(--gutter), var(--max));
+    height: clamp(760px, 64vw, 920px);
+    margin-bottom: 70px;
+    margin-inline: auto;
+    padding: 0;
+    overflow: visible;
+  }
+
+  .polaroid {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    width: clamp(200px, 17vw, 240px);
+  }
+
+  /* outranks the global reveal transition so hover/drag respond instantly */
+  .table .polaroid[data-shot] {
+    transition:
+      box-shadow 0.3s var(--ease),
+      scale 0.35s var(--ease-spring),
+      opacity 0.6s var(--ease) calc(var(--d, 0) * 1ms);
+  }
+
+  .wide {
+    width: clamp(300px, 26vw, 370px);
+  }
+
+  .table[data-draggable] .polaroid {
+    cursor: grab;
+    touch-action: none;
+  }
+
+  .table[data-draggable] .polaroid:hover {
+    scale: 1.04;
+    box-shadow:
+      0 1px 0 rgb(0 0 0 / 0.04),
+      0 30px 44px -18px rgb(60 25 10 / 0.55);
+  }
+
+  .table[data-draggable] .polaroid[data-dragging] {
+    cursor: grabbing;
+    scale: 1.08;
+    box-shadow: 0 44px 60px -24px rgb(60 25 10 / 0.6);
+  }
+}

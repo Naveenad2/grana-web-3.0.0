@@ -1,0 +1,86 @@
+/* clips the oversized tilted tape sideways only, so rotated corners still show */
+.frame {
+  min-width: 0;
+  overflow-x: clip;
+  overflow-y: visible;
+}
+
+.marquee {
+  position: relative;
+  overflow: hidden;
+  padding-block: 14px;
+  transform: rotate(var(--tilt, 0deg));
+  width: 110%;
+  margin-left: -5%;
+  user-select: none;
+}
+
+.ink {
+  background: var(--ink);
+  color: var(--cream);
+}
+
+.orange {
+  background: var(--orange);
+  color: var(--ink);
+}
+
+.cream {
+  background: var(--cream);
+  color: var(--ink);
+  border-block: 2px solid var(--ink);
+}
+
+.track {
+  display: flex;
+  width: max-content;
+  animation: marquee var(--speed, 38s) linear infinite;
+}
+
+.reverse {
+  animation-direction: reverse;
+}
+
+.marquee:hover .track {
+  animation-play-state: paused;
+}
+
+.run {
+  display: flex;
+  align-items: center;
+  flex: none;
+}
+
+.item {
+  padding-inline: 0.55em;
+  font-family: var(--ff-display);
+  font-weight: 900;
+  font-stretch: 85%;
+  font-size: clamp(22px, 3.2vw, 44px);
+  letter-spacing: -0.01em;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.star {
+  width: clamp(16px, 1.8vw, 26px);
+  height: auto;
+  margin-inline: 0.4em;
+  fill: currentColor;
+  flex: none;
+}
+
+.orange .star {
+  fill: var(--cream);
+}
+
+.ink .star {
+  fill: var(--orange);
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}

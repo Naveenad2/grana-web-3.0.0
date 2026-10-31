@@ -1,0 +1,21 @@
+.tapes {
+  position: relative;
+  z-index: 5;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  margin-top: -34px;
+  padding-bottom: 34px;
+  overflow: hidden;
+  padding-top: 20px;
+  background: linear-gradient(var(--orange) 50%, var(--cream) 50%);
+}
+
+.tape2 {
+  margin-top: 6px;
+}
+
+@media (max-width: 760px) {
+  .tapes {
+    margin-top: 0;
+  }
+}

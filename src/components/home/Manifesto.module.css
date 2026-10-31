@@ -1,0 +1,198 @@
+.section {
+  position: relative;
+  padding: clamp(80px, 12vw, 170px) 0 clamp(70px, 10vw, 140px);
+  background: var(--cream);
+}
+
+.head {
+  margin-bottom: clamp(26px, 3vw, 40px);
+}
+
+.top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(30px, 5vw, 80px);
+}
+
+.aside {
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  width: clamp(240px, 24vw, 340px);
+  rotate: 3deg;
+}
+
+.asideArch {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 0.78;
+  border-radius: 999px 999px 24px 24px;
+  overflow: hidden;
+  border: 10px solid var(--paper);
+  box-shadow: var(--shadow-lift);
+}
+
+.asideArch img {
+  object-fit: cover;
+}
+
+.aside figcaption {
+  font-size: 22px;
+  color: var(--orange-deep);
+}
+
+@media (max-width: 1000px) {
+  .top {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .aside {
+    display: none;
+  }
+}
+
+.sentence {
+  --p: 0;
+  max-width: 22ch;
+  font-family: var(--ff-display);
+  font-weight: 800;
+  font-stretch: 94%;
+  font-size: clamp(34px, 5.2vw, 86px);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+}
+
+@media (min-width: 900px) {
+  .sentence {
+    max-width: 19ch;
+  }
+}
+
+.w {
+  /* each word lights up as scroll progress passes its position in the sentence */
+  opacity: clamp(0.14, calc((var(--p) * 1.18 - var(--i)) * 14), 1);
+  transition: opacity 0.2s linear;
+}
+
+.accent {
+  color: var(--orange-deep);
+}
+
+.pill {
+  position: relative;
+  display: inline-block;
+  width: 1.75em;
+  height: 0.86em;
+  margin: 0 0.24em 0 0.02em;
+  vertical-align: -0.06em;
+  border-radius: 999px;
+  overflow: hidden;
+  box-shadow: 0 0 0 3px var(--cream), 0 10px 22px -10px rgb(60 25 10 / 0.6);
+  transform: rotate(-4deg) scale(clamp(0.2, calc((var(--p) * 1.18 - var(--i)) * 10), 1));
+  transition: transform 0.4s var(--ease-spring);
+}
+
+.pill:nth-of-type(2n) {
+  transform: rotate(5deg) scale(clamp(0.2, calc((var(--p) * 1.18 - var(--i)) * 10), 1));
+}
+
+.pill img {
+  object-fit: cover;
+}
+
+.foot {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 2fr);
+  gap: clamp(32px, 5vw, 80px);
+  margin-top: clamp(56px, 8vw, 110px);
+  padding-top: clamp(28px, 3vw, 40px);
+  border-top: 2px solid var(--ink);
+}
+
+.founder {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  font-size: 16px;
+  color: rgb(28 20 16 / 0.78);
+}
+
+.founder :global(.script) {
+  font-size: 30px;
+  color: var(--orange-deep);
+  transform: rotate(-4deg);
+  transform-origin: left;
+}
+
+.pillars {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(20px, 3vw, 40px);
+}
+
+.pillars li {
+  position: relative;
+  display: grid;
+  gap: 10px;
+  align-content: start;
+  padding: 26px 22px 26px;
+  border-radius: var(--radius);
+  background: var(--paper);
+}
+
+/* beats the global reveal transition so hover keeps its spring */
+.pillars li[data-reveal] {
+  transition:
+    transform 0.5s var(--ease-spring),
+    background-color 0.4s var(--ease),
+    opacity 0.9s var(--ease) calc(var(--d, 0) * 1ms),
+    translate 1s var(--ease) calc(var(--d, 0) * 1ms);
+}
+
+.pillars li:hover {
+  transform: translateY(-6px) rotate(-1.2deg);
+  background: var(--sand);
+}
+
+.n {
+  font-family: var(--ff-mono);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  color: var(--orange-deep);
+}
+
+.pillars h3 {
+  font-family: var(--ff-serif);
+  font-weight: 400;
+  font-size: clamp(22px, 1.8vw, 27px);
+  line-height: 1.1;
+}
+
+.pillars p {
+  font-size: 15.5px;
+  color: rgb(28 20 16 / 0.75);
+}
+
+@media (max-width: 900px) {
+  .foot {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .pillars {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .w {
+    opacity: 1;
+  }
+
+  .pill {
+    transform: rotate(-4deg);
+  }
+}

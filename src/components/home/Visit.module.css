@@ -1,0 +1,705 @@
+.section {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(80px, 10vw, 150px) 0 clamp(90px, 10vw, 150px);
+  background:
+    radial-gradient(70% 60% at 85% 10%, var(--orange-hot), transparent 70%),
+    repeating-linear-gradient(90deg, transparent 0 120px, rgb(28 20 16 / 0.03) 120px 121px),
+    var(--orange);
+  color: var(--ink);
+}
+
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px 30px;
+  margin-bottom: clamp(32px, 4vw, 56px);
+}
+
+.title {
+  margin-top: 12px;
+  font-family: var(--ff-display);
+  font-weight: 900;
+  font-stretch: 90%;
+  font-size: clamp(60px, 10vw, 168px);
+  line-height: 0.82;
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
+}
+
+.sub {
+  font-size: clamp(22px, 2.4vw, 34px);
+  color: var(--cream);
+  transform: rotate(-4deg);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: clamp(16px, 2vw, 28px);
+}
+
+/* shared card surface */
+.clockCard,
+.postcard,
+.mapCard,
+.way {
+  border-radius: 28px;
+  background: var(--cream);
+  box-shadow: 0 30px 50px -30px rgb(80 20 5 / 0.6);
+}
+
+/* ---------- pizza clock ---------- */
+
+.clockCard {
+  grid-column: span 5;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-areas:
+    "kicker kicker"
+    "clock info"
+    "week week";
+  gap: 18px 22px;
+  align-items: center;
+  padding: clamp(20px, 2.4vw, 32px);
+}
+
+.clockCard > :global(.kicker) {
+  grid-area: kicker;
+  color: var(--orange-deep);
+}
+
+.clockWrap {
+  grid-area: clock;
+  position: relative;
+}
+
+.clock {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 14px 18px rgb(80 30 5 / 0.3));
+}
+
+.cSlice path {
+  stroke: #f3ddaf;
+  stroke-width: 2;
+}
+
+.cOpen path {
+  fill: #c9381f;
+}
+
+.cClosed path {
+  fill: #f3ddaf;
+  stroke-dasharray: 3 3;
+  stroke: #b8401c;
+}
+
+.cCheese {
+  fill: #fff6e6;
+}
+
+.cBasil {
+  fill: #2e6a3a;
+}
+
+.cSlice {
+  transform-box: view-box;
+  transform-origin: 0 0;
+  transition: transform 0.5s var(--ease-spring);
+}
+
+.cNow {
+  transform: scale(1.06);
+}
+
+.cNow path {
+  fill: #e5472a;
+}
+
+.cNum {
+  font-family: var(--ff-mono);
+  font-size: 9px;
+  font-weight: 700;
+  fill: #5a3526;
+}
+
+.hourHand,
+.minuteHand {
+  stroke: var(--ink);
+  stroke-linecap: round;
+  transition: transform 0.6s var(--ease);
+}
+
+.hourHand {
+  stroke-width: 7;
+}
+
+.minuteHand {
+  stroke-width: 4;
+}
+
+.cHub {
+  fill: var(--ink);
+}
+
+.cHubMark {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 8%;
+  translate: -50% -50%;
+  color: var(--orange);
+}
+
+.ampm {
+  position: absolute;
+  right: -2%;
+  top: -2%;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--cream);
+  font-family: var(--ff-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.clockInfo {
+  grid-area: info;
+  display: grid;
+  gap: 8px;
+}
+
+.clockStatus {
+  font-family: var(--ff-serif);
+  font-weight: 400;
+  font-size: clamp(26px, 2.4vw, 36px);
+  line-height: 1;
+}
+
+.clockStatus[data-open="true"] {
+  color: var(--basil);
+}
+
+.clockStatus[data-open="false"] {
+  color: var(--orange-deep);
+}
+
+.countdown {
+  font-weight: 600;
+  font-size: 15.5px;
+}
+
+.clockLegend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--ff-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: rgb(28 20 16 / 0.6);
+}
+
+.legendOpen {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50% 50% 0 50%;
+  background: #c9381f;
+}
+
+.week {
+  grid-area: week;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.week li {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  padding: 8px 2px;
+  border-radius: 12px;
+  background: var(--paper);
+  font-family: var(--ff-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.week small {
+  font-size: 10px;
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+.week li[aria-current="date"] {
+  background: var(--ink);
+  color: var(--cream);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 14px -8px rgb(0 0 0 / 0.5);
+}
+
+/* ---------- postcard ---------- */
+
+.postcard {
+  grid-column: span 7;
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  grid-template-areas:
+    "message address"
+    "actions actions";
+  gap: 22px clamp(20px, 3vw, 40px);
+  padding: clamp(22px, 2.6vw, 36px);
+  background:
+    linear-gradient(var(--cream), var(--cream)) padding-box,
+    repeating-linear-gradient(-45deg, var(--orange-deep) 0 12px, var(--cream) 12px 24px, #6fa9b0 24px 36px, var(--cream) 36px 48px)
+      border-box;
+  border: 10px solid transparent;
+  transform: rotate(-0.8deg);
+  transition: transform 0.6s var(--ease-spring);
+}
+
+.postcard:hover {
+  transform: rotate(0deg) translateY(-4px);
+}
+
+.pcMessage {
+  grid-area: message;
+  display: grid;
+  gap: 14px;
+  align-content: start;
+  padding-right: clamp(16px, 2vw, 30px);
+  border-right: 1.5px solid rgb(28 20 16 / 0.18);
+}
+
+.pcHello {
+  font-size: clamp(24px, 2.3vw, 34px);
+  color: var(--orange-deep);
+  transform: rotate(-3deg);
+  transform-origin: left;
+}
+
+.pcText {
+  font-family: var(--ff-serif);
+  font-size: 17px;
+  line-height: 1.45;
+}
+
+.pcSign {
+  justify-self: end;
+  font-size: 22px;
+  color: var(--brown);
+}
+
+.pcAddress {
+  grid-area: address;
+  position: relative;
+  display: grid;
+  align-content: end;
+  padding-top: 158px;
+}
+
+.stamp {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: grid;
+  justify-items: center;
+  width: 96px;
+  padding: 8px 8px 4px;
+  background: #fffdf8;
+  rotate: 4deg;
+  box-shadow: 0 4px 10px -4px rgb(0 0 0 / 0.35);
+  /* perforated edge only: solid content box + a ring of holes in the padding */
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    radial-gradient(circle 4px, transparent 97%, #000) -4px -4px / 10px 10px round;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    radial-gradient(circle 4px, transparent 97%, #000) -4px -4px / 10px 10px round;
+}
+
+.stamp img {
+  width: 76px;
+  height: 76px;
+  background: var(--sky-soft);
+}
+
+.stamp span {
+  font-family: var(--ff-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.postmark {
+  position: absolute;
+  top: 18px;
+  right: 74px;
+  width: 150px;
+  overflow: visible;
+  opacity: 0.55;
+  rotate: -14deg;
+  pointer-events: none;
+}
+
+.postmark circle,
+.postmark path {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2;
+}
+
+.postmark text {
+  font-family: var(--ff-mono);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 1.3px;
+  fill: var(--ink);
+}
+
+.postmark .pmCenter {
+  font-size: 14px;
+  letter-spacing: 0;
+}
+
+.lines {
+  display: grid;
+  font-style: normal;
+}
+
+.lines span {
+  padding: 8px 2px 2px;
+  border-bottom: 1.5px solid rgb(28 20 16 / 0.22);
+  font-family: var(--ff-script);
+  font-size: clamp(15px, 1.35vw, 19px);
+  line-height: 1.6;
+}
+
+.coords {
+  margin-top: 10px;
+  font-family: var(--ff-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: rgb(28 20 16 / 0.6);
+}
+
+.pcActions {
+  grid-area: actions;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* ---------- map ---------- */
+
+.mapCard {
+  grid-column: span 7;
+  display: grid;
+  gap: 12px;
+  justify-items: center;
+  padding: 12px 12px 16px;
+}
+
+.mapFrame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 600 / 420;
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--paper);
+}
+
+.mapArt,
+.iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.route {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 4;
+  stroke-dasharray: 2 12;
+  stroke-linecap: round;
+  animation: march 1.2s linear infinite;
+}
+
+.mapPin {
+  position: absolute;
+  left: 55%;
+  top: 50%;
+  translate: -50% -100%;
+  display: grid;
+  justify-items: center;
+}
+
+.pinHead {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: clamp(64px, 8vw, 92px);
+  aspect-ratio: 1;
+  border-radius: 50% 50% 50% 0;
+  rotate: -45deg;
+  background: var(--cream);
+  border: 4px solid var(--ink);
+  box-shadow: 0 14px 22px -8px rgb(0 0 0 / 0.5);
+  animation: drop 1s var(--ease-spring) both;
+}
+
+.pinHead img {
+  width: 92%;
+  height: auto;
+  rotate: 45deg;
+}
+
+.pinPulse {
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  width: 24px;
+  height: 10px;
+  translate: -50% 0;
+  border-radius: 50%;
+  background: rgb(28 20 16 / 0.3);
+}
+
+.pinPulse::after {
+  content: "";
+  position: absolute;
+  inset: -12px -24px;
+  border-radius: 50%;
+  border: 2px solid var(--orange-deep);
+  animation: ring 2s var(--ease) infinite;
+}
+
+.scale {
+  position: absolute;
+  left: 14px;
+  top: 12px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgb(251 243 228 / 0.9);
+  font-family: var(--ff-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.mapFrame .loadBtn {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+}
+
+.mapLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--ff-mono);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-bottom: 2px solid currentColor;
+}
+
+.mapLink svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ---------- ways to eat ---------- */
+
+.ways {
+  grid-column: span 5;
+  display: grid;
+  gap: clamp(12px, 1.4vw, 18px);
+}
+
+.way {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas:
+    "icon body"
+    "icon link";
+  gap: 6px 16px;
+  padding: 20px 22px;
+  transition: transform 0.45s var(--ease-spring);
+}
+
+.way:hover {
+  transform: translateX(6px) rotate(-0.6deg);
+}
+
+.wayIcon {
+  grid-area: icon;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--orange);
+}
+
+.wayIcon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.way h3 {
+  font-family: var(--ff-display);
+  font-weight: 900;
+  font-size: 22px;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+.way p {
+  font-size: 15px;
+  color: rgb(28 20 16 / 0.75);
+}
+
+.wayLink {
+  grid-area: link;
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  font-family: var(--ff-mono);
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--orange-deep);
+  border-bottom: 2px solid currentColor;
+}
+
+.wayLink svg {
+  width: 14px;
+  height: 14px;
+}
+
+@keyframes march {
+  to {
+    stroke-dashoffset: -14;
+  }
+}
+
+@keyframes drop {
+  from {
+    transform: translateY(-60px);
+    opacity: 0;
+  }
+}
+
+@keyframes ring {
+  from {
+    transform: scale(0.4);
+    opacity: 1;
+  }
+  to {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 1180px) {
+  .clockCard,
+  .postcard,
+  .mapCard,
+  .ways {
+    grid-column: 1 / -1;
+  }
+
+  .clockCard {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .clockCard {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "kicker"
+      "clock"
+      "info"
+      "week";
+    justify-items: stretch;
+  }
+
+  .clockWrap {
+    width: min(78vw, 300px);
+    justify-self: center;
+  }
+
+  .postcard {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "address"
+      "message"
+      "actions";
+    transform: none;
+  }
+
+  .pcMessage {
+    padding-right: 0;
+    padding-top: 18px;
+    border-right: 0;
+    border-top: 1.5px solid rgb(28 20 16 / 0.18);
+  }
+
+  .stamp {
+    width: 78px;
+  }
+
+  .stamp img {
+    width: 60px;
+    height: 60px;
+  }
+
+  .postmark {
+    width: 120px;
+    right: 56px;
+  }
+
+  .pcAddress {
+    padding-top: 128px;
+  }
+
+  .mapFrame {
+    aspect-ratio: 600 / 480;
+  }
+
+  .mapFrame .loadBtn {
+    left: 50%;
+    right: auto;
+    translate: -50% 0;
+  }
+
+  .week {
+    gap: 4px;
+  }
+
+  .week li {
+    padding: 7px 0;
+    font-size: 10px;
+  }
+}
