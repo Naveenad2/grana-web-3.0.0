@@ -610,3 +610,17 @@
     flex-wrap: wrap;
   }
 }
+
+@media (hover: none), (pointer: coarse) {
+  .toolbarInner {
+    background: var(--ink);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .dialog::backdrop {
+    background: rgb(28 20 16 / 0.78);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}

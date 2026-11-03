@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { Img } from "@/components/ui/Img";
 import { useState } from "react";
 import { site } from "@/data/site";
 import { ArrowUpRight, Pin } from "@/components/ui/Icons";
@@ -75,7 +75,7 @@ export function MapCard() {
             <div className={styles.mapPin} aria-hidden="true">
               <span className={styles.pinPulse} />
               <span className={styles.pinHead}>
-                <Image src="/logo.png" alt="" width={120} height={120} sizes="64px" />
+                <Img src="/logo.png" alt="" width={120} height={120} sizes="64px" />
               </span>
             </div>
 

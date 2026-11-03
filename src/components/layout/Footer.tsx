@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { Img } from "@/components/ui/Img";
 import Link from "next/link";
 import { fullAddress, navLinks, site } from "@/data/site";
 import { ArrowUpRight, Instagram, Phone } from "@/components/ui/Icons";
@@ -19,7 +19,7 @@ export function Footer() {
 
         <div className={styles.grid}>
           <div className={styles.brandCol}>
-            <Image src="/logo-cream.png" alt={site.name} width={220} height={220} sizes="200px" className={styles.logo} />
+            <Img src="/logo-cream.png" alt={site.name} width={220} height={220} sizes="200px" className={styles.logo} />
             <p>
               Neapolitan-style pizza, opened by hand and fired in about ninety seconds. Made with love on 1st
               Cross Road.

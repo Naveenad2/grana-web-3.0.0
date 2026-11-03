@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { Img } from "@/components/ui/Img";
 import Link from "next/link";
 import { useCallback, useRef, type CSSProperties } from "react";
 import { ArrowRight } from "@/components/ui/Icons";
@@ -61,22 +61,37 @@ const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 export function BaseStory() {
   const ref = useRef<HTMLElement>(null);
   const timerRef = useRef<HTMLSpanElement>(null);
+  const railRef = useRef<HTMLElement>(null);
   const framesRef = useRef<HTMLElement[] | null>(null);
 
+  // Writes transforms straight onto the photo frames. Frames that are off-screen or fully covered
+  // are hidden, so a phone only ever paints the one or two photos you can actually see.
   const onProgress = useCallback((p: number, el: HTMLElement) => {
-    framesRef.current ??= Array.from(el.querySelectorAll<HTMLElement>("[data-frame]"));
+    const frames = (framesRef.current ??= Array.from(el.querySelectorAll<HTMLElement>("[data-frame]")));
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const seg = p * N;
-    framesRef.current.forEach((frame, k) => {
-      // each photo wipes in around the boundary with the previous chapter, then slowly zooms out
-      const reveal = k === 0 ? 1 : clamp01((seg - (k - 0.32)) / 0.5);
+    // each photo wipes in around the boundary with the previous chapter, then slowly zooms out
+    const reveal = frames.map((_, k) => (k === 0 ? 1 : clamp01((seg - (k - 0.32)) / 0.5)));
+    frames.forEach((frame, k) => {
+      const r = reveal[k];
+      const covered = k < N - 1 && reveal[k + 1] >= 1;
+      const show = r > 0 && !covered;
+      frame.style.visibility = show ? "visible" : "hidden";
+      if (!show) return;
+      const media = frame.firstElementChild as HTMLElement;
+      if (reduced) {
+        frame.style.opacity = r.toFixed(3);
+        return;
+      }
       const zoom = clamp01((seg - (k - 0.32)) / 1.4);
-      frame.style.setProperty("--r", reveal.toFixed(4));
-      frame.style.setProperty("--z", zoom.toFixed(4));
+      frame.style.transform = `translate3d(0,${((1 - r) * 100).toFixed(3)}%,0)`;
+      media.style.transform = `translate3d(0,${((r - 1) * 100).toFixed(3)}%,0) scale(${(1.2 - zoom * 0.14).toFixed(4)})`;
     });
-    el.style.setProperty("--p", p.toFixed(4));
+    railRef.current?.style.setProperty("--p", p.toFixed(4));
     const step = String(Math.min(N, Math.floor(seg) + 1));
     if (el.dataset.step !== step) el.dataset.step = step;
-    if (timerRef.current) timerRef.current.textContent = String(Math.round(clamp01(seg - 3) * 90)).padStart(2, "0");
+    const secs = String(Math.round(clamp01(seg - 3) * 90)).padStart(2, "0");
+    if (timerRef.current && timerRef.current.textContent !== secs) timerRef.current.textContent = secs;
   }, []);
   useScrollProgress(ref, onProgress);
 
@@ -86,7 +101,7 @@ export function BaseStory() {
         {chapters.map((c, k) => (
           <div key={c.image} className={styles.frame} data-frame style={{ zIndex: k + 1 } as CSSProperties}>
             <div className={styles.media}>
-              <Image
+              <Img
                 src={c.image}
                 alt={c.alt}
                 fill
@@ -142,7 +157,7 @@ export function BaseStory() {
           </p>
         </div>
 
-        <nav className={styles.rail} aria-hidden="true">
+        <nav ref={railRef} className={styles.rail} aria-hidden="true">
           <span className={styles.railFill} />
           {chapters.map((c, i) => (
             <span key={c.label} className={styles.tick} data-n={i + 1}>

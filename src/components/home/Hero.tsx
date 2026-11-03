@@ -1,10 +1,10 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, type CSSProperties, type ReactNode } from "react";
 import { site } from "@/data/site";
 import { ArrowRight, Phone } from "@/components/ui/Icons";
+import { Img } from "@/components/ui/Img";
 import { OpenBadge } from "@/components/ui/OpenBadge";
 import { REDUCED_MOTION } from "@/lib/useMediaQuery";
 import { useScrollProgress, type ScrollRange } from "@/lib/useScrollProgress";
@@ -12,13 +12,15 @@ import styles from "./Hero.module.css";
 
 const heroRange: ScrollRange = (rect) => [0, -rect.height];
 
-const lines = [
-  { word: "Grana", cls: styles.l1, offset: 0 },
-  { word: "Grana", cls: styles.l2, offset: 3 },
-  { word: "Pizzeria", cls: styles.l3, offset: 6 },
-];
-
 const ringText = "Wood-fired ✦ Hand-stretched ✦ Neapolitan style ✦ Panampilly Nagar ✦ Kochi ✦ ";
+
+// 24 sun-rays as wedges that fade out towards the edge (no CSS mask, so rotating them stays on the GPU)
+const rays = Array.from({ length: 24 }, (_, i) => {
+  const a = (i * 15 * Math.PI) / 180;
+  const b = ((i * 15 + 5) * Math.PI) / 180;
+  const f = (n: number) => n.toFixed(1);
+  return `M0 0L${f(Math.cos(a) * 100)} ${f(Math.sin(a) * 100)}L${f(Math.cos(b) * 100)} ${f(Math.sin(b) * 100)}Z`;
+}).join("");
 
 const Leaf = ({ shade = "#2e6a3a" }: { shade?: string }) => (
   <svg viewBox="0 0 60 40">
@@ -73,19 +75,38 @@ const ingredients: Ingredient[] = [
   { node: <Garlic />, top: "96%", left: "34%", w: 34, rot: 18, fx: "0px", fy: "260px", d: 1.35, depth: 34, mobile: true },
 ];
 
+const Chars = ({ word, offset }: { word: string; offset: number }) =>
+  [...word].map((ch, i) => (
+    <span key={i} className={styles.char} style={{ "--ci": offset + i } as CSSProperties}>
+      {ch}
+    </span>
+  ));
+
 export function Hero() {
   const ref = useRef<HTMLElement>(null);
+  const partsRef = useRef<Record<string, HTMLElement> | null>(null);
 
+  // scroll effects write transforms straight onto a handful of elements: no style recalculation of the whole hero
   const onProgress = useCallback((p: number, el: HTMLElement) => {
-    el.style.setProperty("--hp", p.toFixed(4));
+    partsRef.current ??= Object.fromEntries(
+      Array.from(el.querySelectorAll<HTMLElement>("[data-part]"), (n) => [n.dataset.part as string, n]),
+    );
+    const vw = window.innerWidth / 100;
+    const { l1, l2, plate, ring, seal, ings } = partsRef.current;
+    if (l1) l1.style.transform = `translate3d(${(-p * 14 * vw).toFixed(1)}px,0,0)`;
+    if (l2) l2.style.transform = `translate3d(${(p * 9 * vw).toFixed(1)}px,0,0)`;
+    if (plate) plate.style.transform = `translate3d(0,${(p * 20).toFixed(2)}%,0) rotate(${(p * 90).toFixed(2)}deg) scale(${(1 + p * 0.12).toFixed(4)})`;
+    if (ring) ring.style.transform = `rotate(${(-p * 60).toFixed(2)}deg)`;
+    if (seal) seal.style.transform = `translate3d(0,${(-p * 160).toFixed(1)}px,0)`;
+    if (ings) ings.style.transform = `translate3d(0,${(-p * 140).toFixed(1)}px,0)`;
   }, []);
   useScrollProgress(ref, onProgress, heroRange);
 
-  // pointer-driven parallax and 3D tilt (desktop only)
+  // pointer-driven parallax and 3D tilt (mouse/trackpad only)
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    if (window.matchMedia("(pointer: coarse)").matches || window.matchMedia(REDUCED_MOTION).matches) return;
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches || window.matchMedia(REDUCED_MOTION).matches) return;
     let frame = 0;
     let mx = 0;
     let my = 0;
@@ -120,15 +141,12 @@ export function Hero() {
         <div className={styles.copy}>
           <h1 id="hero-title" className={styles.type}>
             <span className="sr-only">Grana Pizzeria by Abramatt: Neapolitan pizza in Panampilly Nagar, Kochi</span>
-            {lines.map((l) => (
-              <span key={l.cls} className={`${styles.line} ${l.cls}`} aria-hidden="true">
-                {[...l.word].map((ch, i) => (
-                  <span key={i} className={styles.char} style={{ "--ci": l.offset + i } as CSSProperties}>
-                    {ch}
-                  </span>
-                ))}
-              </span>
-            ))}
+            <span data-part="l1" className={`${styles.line} ${styles.l1}`} aria-hidden="true">
+              <Chars word="Grana" offset={0} />
+            </span>
+            <span data-part="l2" className={`${styles.line} ${styles.l2}`} aria-hidden="true">
+              <Chars word="Pizzeria" offset={5} />
+            </span>
             <span className={`script ${styles.byline}`} aria-hidden="true">
               by Abramatt
             </span>
@@ -152,36 +170,55 @@ export function Hero() {
         </div>
 
         <div className={styles.stage}>
-          <div className={styles.rays} aria-hidden="true" />
+          <svg className={styles.rays} viewBox="-100 -100 200 200" aria-hidden="true">
+            <defs>
+              <radialGradient id="hero-ray-fade" r="50%">
+                <stop offset="0.12" stopColor="#ffecd2" stopOpacity="0" />
+                <stop offset="0.3" stopColor="#ffecd2" stopOpacity="0.22" />
+                <stop offset="1" stopColor="#ffecd2" stopOpacity="0" />
+              </radialGradient>
+            </defs>
+            <path d={rays} fill="url(#hero-ray-fade)" />
+          </svg>
+          <div className={styles.glow} aria-hidden="true" />
+          <div className={styles.sparks} aria-hidden="true">
+            {Array.from({ length: 12 }, (_, i) => (
+              <span key={i} style={{ "--s": i } as CSSProperties} />
+            ))}
+          </div>
 
           <div className={styles.ringWrap} aria-hidden="true">
-            <svg className={styles.ring} viewBox="0 0 1000 1000">
-              <defs>
-                <path id="hero-ring-path" d="M500 500m-470 0a470 470 0 1 1 940 0a470 470 0 1 1-940 0" />
-              </defs>
-              <text>
-                {/* textLength = circumference (2π·470), so two repeats close the loop seamlessly */}
-                <textPath href="#hero-ring-path" textLength="2953" lengthAdjust="spacing">
-                  {ringText.repeat(2)}
-                </textPath>
-              </text>
-            </svg>
+            <div data-part="ring" className={styles.ringScroll}>
+              <svg className={styles.ring} viewBox="0 0 1000 1000">
+                <defs>
+                  <path id="hero-ring-path" d="M500 500m-470 0a470 470 0 1 1 940 0a470 470 0 1 1-940 0" />
+                </defs>
+                <text>
+                  {/* textLength = circumference (2π·470), so two repeats close the loop seamlessly */}
+                  <textPath href="#hero-ring-path" textLength="2953" lengthAdjust="spacing">
+                    {ringText.repeat(2)}
+                  </textPath>
+                </text>
+              </svg>
+            </div>
           </div>
 
           <div className={styles.plateEnter}>
             <div className={styles.plateTilt}>
-              <div className={styles.plateScroll}>
+              <div data-part="plate" className={styles.plateScroll}>
                 <div className={styles.shadow} aria-hidden="true" />
                 <div className={styles.plate}>
-                  <Image
-                    src="/images/story/hero-pizza.jpg"
-                    alt="A wood-fired Neapolitan margherita with blistered crust, tomato, fior di latte and basil"
-                    fill
-                    sizes="(max-width: 760px) 92vw, 46vw"
-                    loading="eager"
-                    fetchPriority="high"
-                    quality={80}
-                  />
+                  <div className={styles.plateSpin}>
+                    <Img
+                      src="/images/story/hero-pizza.jpg"
+                      alt="A wood-fired Neapolitan margherita with blistered crust, tomato, fior di latte and basil"
+                      fill
+                      sizes="(max-width: 900px) 90vw, 46vw"
+                      loading="eager"
+                      fetchPriority="high"
+                      quality={80}
+                    />
+                  </div>
                 </div>
                 <span className={styles.shine} aria-hidden="true" />
               </div>
@@ -194,49 +231,54 @@ export function Hero() {
             <path d="M120 196C100 162 140 132 120 96S130 36 120 8" />
           </svg>
 
-          {ingredients.map((it, i) => (
-            <span
-              key={i}
-              className={`${styles.ing} ${it.mobile ? "" : styles.desktopOnly}`}
-              aria-hidden="true"
-              style={
-                {
-                  top: it.top,
-                  left: it.left,
-                  width: it.w,
-                  "--rot": `${it.rot}deg`,
-                  "--fx": it.fx,
-                  "--fy": it.fy,
-                  "--d": `${it.d}s`,
-                  "--depth": it.depth,
-                } as CSSProperties
-              }
-            >
-              <span className={styles.ingBob} style={{ animationDelay: `${-i * 0.9}s` }}>
-                {it.node}
+          <div data-part="ings" className={styles.ings}>
+            {ingredients.map((it, i) => (
+              <span
+                key={i}
+                className={`${styles.ing} ${it.mobile ? "" : styles.desktopOnly}`}
+                aria-hidden="true"
+                style={
+                  {
+                    top: it.top,
+                    left: it.left,
+                    width: it.w,
+                    "--rot": `${it.rot}deg`,
+                    "--fx": it.fx,
+                    "--fy": it.fy,
+                    "--d": `${it.d}s`,
+                    "--depth": it.depth,
+                  } as CSSProperties
+                }
+              >
+                <span className={styles.ingBob} style={{ animationDelay: `${-i * 0.9}s` }}>
+                  {it.node}
+                </span>
               </span>
-            </span>
-          ))}
+            ))}
+          </div>
 
-          <div className={styles.seal}>
-            <svg viewBox="0 0 200 200" className={styles.sealText} aria-hidden="true">
-              <defs>
-                <path id="seal-circle" d="M100 100m-84 0a84 84 0 1 1 168 0a84 84 0 1 1-168 0" />
-              </defs>
-              <text>
-                <textPath href="#seal-circle" textLength="527" lengthAdjust="spacing">
-                  It&rsquo;s all about the base! ✦ It&rsquo;s all about the base! ✦{" "}
-                </textPath>
-              </text>
-            </svg>
-            <Image
-              src="/logo.png"
-              alt="Grana Pizzeria by Abramatt logo"
-              width={240}
-              height={240}
-              sizes="(max-width: 760px) 120px, 180px"
-              className={styles.sealLogo}
-            />
+          <div data-part="seal" className={styles.sealScroll}>
+            <div className={styles.seal}>
+              <svg viewBox="0 0 200 200" className={styles.sealText} aria-hidden="true">
+                <defs>
+                  <path id="seal-circle" d="M100 100m-84 0a84 84 0 1 1 168 0a84 84 0 1 1-168 0" />
+                </defs>
+                <text>
+                  <textPath href="#seal-circle" textLength="527" lengthAdjust="spacing">
+                    It&rsquo;s all about the base! ✦ It&rsquo;s all about the base! ✦{" "}
+                  </textPath>
+                </text>
+              </svg>
+              <Img
+                src="/logo.png"
+                alt="Grana Pizzeria by Abramatt logo"
+                width={240}
+                height={240}
+                sizes="(max-width: 760px) 120px, 190px"
+                loading="eager"
+                className={styles.sealLogo}
+              />
+            </div>
           </div>
         </div>
       </div>

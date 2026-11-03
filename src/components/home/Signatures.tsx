@@ -1,11 +1,11 @@
 "use client";
 
-import Image from "next/image";
+import { Img } from "@/components/ui/Img";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, type CSSProperties } from "react";
 import { badgeLabel, findItem, formatPrice, type MenuItem } from "@/data/menu";
 import { ArrowRight } from "@/components/ui/Icons";
-import { REDUCED_MOTION, useMediaQuery } from "@/lib/useMediaQuery";
+import { useMediaQuery } from "@/lib/useMediaQuery";
 import { useScrollProgress } from "@/lib/useScrollProgress";
 import styles from "./Signatures.module.css";
 
@@ -21,6 +21,8 @@ const picks = [
   .map(findItem)
   .filter((i): i is MenuItem => Boolean(i));
 
+const PINNED = "(min-width: 900px) and (prefers-reduced-motion: no-preference)";
+
 const tones = ["sky", "orange", "sand", "dark"] as const;
 
 export function Signatures() {
@@ -28,32 +30,28 @@ export function Signatures() {
   const trackRef = useRef<HTMLDivElement>(null);
   const barRef = useRef<HTMLSpanElement>(null);
   const distRef = useRef(0);
-  const wide = useMediaQuery("(min-width: 900px)");
-  const reduced = useMediaQuery(REDUCED_MOTION);
-  const pinned = wide && !reduced;
+  // the pinned layout itself comes from the same CSS media query, so nothing jumps after hydration
+  const pinned = useMediaQuery(PINNED);
 
-  // size the section so vertical scroll distance equals the track's horizontal overflow
+  // size the section so vertical scroll distance equals the track's horizontal overflow.
+  // Only widths matter here, so the phone/tablet address bar showing or hiding can't cause a jump.
   useEffect(() => {
     const section = sectionRef.current;
     const track = trackRef.current;
     if (!section || !track) return;
     if (!pinned) {
-      section.style.height = "";
+      section.style.removeProperty("--dist");
       track.style.transform = "";
       return;
     }
     const measure = () => {
       distRef.current = Math.max(0, track.offsetWidth - document.documentElement.clientWidth);
-      section.style.height = `${distRef.current + window.innerHeight}px`;
+      section.style.setProperty("--dist", `${distRef.current}px`);
     };
     measure();
     const ro = new ResizeObserver(measure);
     ro.observe(track);
-    window.addEventListener("resize", measure);
-    return () => {
-      ro.disconnect();
-      window.removeEventListener("resize", measure);
-    };
+    return () => ro.disconnect();
   }, [pinned]);
 
   const onProgress = useCallback(
@@ -67,15 +65,10 @@ export function Signatures() {
   useScrollProgress(sectionRef, onProgress);
 
   return (
-    <section
-      ref={sectionRef}
-      className={styles.section}
-      data-pinned={pinned || undefined}
-      aria-labelledby="sig-title"
-    >
+    <section ref={sectionRef} className={styles.section} aria-labelledby="sig-title">
       <div className={styles.sticky}>
         <div className={styles.track} ref={trackRef}>
-          <div className={styles.intro}>
+          <div className={styles.intro} style={{ "--cols": picks.length + 1 } as CSSProperties}>
             <p className="kicker">N°03 · Most loved</p>
             <h2 id="sig-title" className={styles.title}>
               The ones Kochi keeps <span className="script">ordering</span>
@@ -84,7 +77,9 @@ export function Signatures() {
               The dishes our guests mention again and again, plus a couple we&rsquo;re quietly proud of.
             </p>
             <p className={styles.hint} aria-hidden="true">
-              <span className={styles.hintLine} /> {pinned ? "Keep scrolling" : "Swipe"}
+              <span className={styles.hintLine} />
+              <span className={styles.hintPinned}>Keep scrolling</span>
+              <span className={styles.hintSwipe}>Swipe</span>
             </p>
           </div>
 
@@ -96,7 +91,7 @@ export function Signatures() {
               style={{ "--r": `${i % 2 ? 1.5 : -1.5}deg` } as CSSProperties}
             >
               <div className={styles.arch}>
-                <Image src={item.image} alt={item.name} fill sizes="(max-width: 900px) 78vw, 380px" quality={70} />
+                <Img src={item.image} alt={item.name} fill sizes="(max-width: 900px) 78vw, 380px" quality={70} />
                 <span className={styles.no}>N°0{i + 1}</span>
               </div>
               <div className={styles.info}>

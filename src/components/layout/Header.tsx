@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { Img } from "@/components/ui/Img";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
@@ -78,7 +78,7 @@ export function Header() {
       >
         <div className={styles.bar}>
           <Link href="/" className={styles.brand} aria-label={`${site.name}, home`} onClick={close}>
-            <Image src="/logo.png" alt="" width={192} height={192} sizes="96px" className={styles.logo} />
+            <Img src="/logo.png" alt="" width={192} height={192} sizes="96px" className={styles.logo} />
           </Link>
 
           <nav aria-label="Main" className={styles.nav}>

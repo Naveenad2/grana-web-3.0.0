@@ -53,7 +53,6 @@
 }
 
 .sentence {
-  --p: 0;
   max-width: 22ch;
   font-family: var(--ff-display);
   font-weight: 800;
@@ -70,9 +69,12 @@
 }
 
 .w {
-  /* each word lights up as scroll progress passes its position in the sentence */
-  opacity: clamp(0.14, calc((var(--p) * 1.18 - var(--i)) * 14), 1);
-  transition: opacity 0.2s linear;
+  opacity: 0.14;
+  transition: opacity 0.35s var(--ease);
+}
+
+.w[data-on] {
+  opacity: 1;
 }
 
 .accent {
@@ -89,12 +91,16 @@
   border-radius: 999px;
   overflow: hidden;
   box-shadow: 0 0 0 3px var(--cream), 0 10px 22px -10px rgb(60 25 10 / 0.6);
-  transform: rotate(-4deg) scale(clamp(0.2, calc((var(--p) * 1.18 - var(--i)) * 10), 1));
-  transition: transform 0.4s var(--ease-spring);
+  transform: rotate(-4deg) scale(0.2);
+  transition: transform 0.55s var(--ease-spring);
 }
 
-.pill:nth-of-type(2n) {
-  transform: rotate(5deg) scale(clamp(0.2, calc((var(--p) * 1.18 - var(--i)) * 10), 1));
+.pill[data-on] {
+  transform: rotate(-4deg) scale(1);
+}
+
+.pill:nth-of-type(2n)[data-on] {
+  transform: rotate(5deg) scale(1);
 }
 
 .pill img {
@@ -193,6 +199,6 @@
   }
 
   .pill {
-    transform: rotate(-4deg);
+    transform: rotate(-4deg) scale(1);
   }
 }

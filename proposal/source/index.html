@@ -1,0 +1,658 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Grana Pizzeria · Website Proposal · KiwiBytes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Courier+Prime:wght@400;700&family=Homemade+Apple&family=Young+Serif&display=block" rel="stylesheet" />
+<style>
+  @page { size: 1123px 794px; margin: 0; }
+  :root {
+    --orange: #e0582f; --hot: #f26a34; --deep: #b8401c; --cream: #fbf3e4; --paper: #f4e7cf; --sand: #ead6b1;
+    --ink: #1c1410; --esp: #2a1a13; --brown: #5a3526; --sky: #a8d0d4; --line: rgb(28 20 16 / .14);
+    --serif: "Young Serif", Georgia, serif; --sans: "Archivo", system-ui, sans-serif;
+    --script: "Homemade Apple", cursive; --mono: "Courier Prime", monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { background: #777; font-family: var(--sans); color: var(--ink); font-size: 13px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+  img { display: block; }
+  .page { position: relative; width: 1123px; height: 794px; overflow: hidden; break-after: page; page-break-after: always; margin: 0 auto 24px; }
+  @media print { body { background: none; } .page { margin: 0; } }
+
+  /* ---------- shared page furniture ---------- */
+  .ph, .pf { position: absolute; left: 60px; right: 60px; display: flex; justify-content: space-between; font-family: var(--mono); font-weight: 700; font-size: 9.5px; letter-spacing: .22em; text-transform: uppercase; }
+  .ph { top: 30px; } .pf { bottom: 26px; align-items: baseline; }
+  .pf .n { font-family: var(--serif); font-size: 15px; letter-spacing: 0; font-weight: 400; }
+  .ph b { font-weight: 700; margin-right: 10px; }
+  .dark { background: var(--esp); color: var(--cream); }
+  .dark .ph, .dark .pf { color: rgb(251 243 228 / .55); }
+  .cream { background: var(--cream); } .paper { background: var(--paper); }
+  .cream .ph, .cream .pf, .paper .ph, .paper .pf { color: rgb(28 20 16 / .5); }
+  .kick { display: inline-flex; align-items: center; gap: 9px; font-family: var(--mono); font-weight: 700; font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase; }
+  .kick::before { content: ""; width: 11px; height: 11px; background: var(--orange); clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+  .dark .kick { color: var(--hot); } .kick.o { color: var(--deep); }
+  h1, h2, h3 { font-weight: 400; }
+  .h { font-family: var(--serif); font-size: 44px; line-height: 1.04; letter-spacing: -.01em; }
+  .h .s, .s { font-family: var(--script); color: var(--orange); font-size: .66em; line-height: 1.5; display: inline-block; transform: rotate(-3deg); transform-origin: left; }
+  .dark .h .s { color: var(--hot); }
+  .lead { font-size: 15px; line-height: 1.6; }
+  .muted { opacity: .72; }
+  .arch { border-radius: 999px 999px 18px 18px; overflow: hidden; }
+  .arch img, .cover-img img, .fill { width: 100%; height: 100%; object-fit: cover; }
+  .chip { display: inline-block; padding: 7px 13px; border-radius: 999px; font-size: 11.5px; }
+  .check { display: grid; grid-template-columns: 18px 1fr; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
+  .check::before { content: ""; width: 14px; height: 8px; margin-top: 4px; border-left: 2px solid var(--deep); border-bottom: 2px solid var(--deep); transform: rotate(-45deg); }
+  .dark .check { border-color: rgb(251 243 228 / .14); } .dark .check::before { border-color: var(--hot); }
+  .redsq { display: inline-block; width: 11px; height: 11px; border-radius: 2px; background: var(--orange); margin-right: 8px; vertical-align: -1px; }
+
+  /* KiwiBytes mark */
+  .kiwi { display: inline-flex; align-items: center; gap: 8px; font-family: var(--sans); font-size: 15px; letter-spacing: -.01em; }
+  .kiwi svg { width: 22px; height: 22px; } .kiwi b { font-weight: 800; }
+
+  /* device mockups */
+  .browser { border-radius: 14px; overflow: hidden; background: #1a120e; box-shadow: 0 30px 60px -28px rgb(0 0 0 / .65), 0 0 0 1px rgb(255 255 255 / .06); }
+  .browser .bar { height: 28px; display: flex; align-items: center; gap: 6px; padding: 0 12px; background: #2b1d16; position: relative; }
+  .browser .bar i { width: 8px; height: 8px; border-radius: 50%; background: rgb(251 243 228 / .25); }
+  .browser .bar span { position: absolute; left: 50%; translate: -50% 0; padding: 3px 26px; border-radius: 999px; background: rgb(251 243 228 / .08); color: rgb(251 243 228 / .7); font-size: 9.5px; }
+  .light .browser .bar { background: #ddcfb2; } .light .browser .bar i { background: rgb(28 20 16 / .25); } .light .browser .bar span { background: #fff8ea; color: #6b584c; } .light .browser { background: #fff; box-shadow: 0 30px 60px -28px rgb(60 25 10 / .5), 0 0 0 1px rgb(28 20 16 / .12); }
+  .phone { position: relative; padding: 7px; border-radius: 30px; background: #120c09; box-shadow: 0 30px 50px -24px rgb(0 0 0 / .7), inset 0 0 0 1.5px #3b2c24; }
+  .phone img { width: 100%; border-radius: 24px; }
+  .phone::after { content: ""; position: absolute; top: 14px; left: 50%; width: 30%; height: 13px; translate: -50% 0; border-radius: 999px; background: #120c09; }
+  .tablet { padding: 9px; border-radius: 24px; background: #120c09; box-shadow: 0 30px 50px -24px rgb(0 0 0 / .7), inset 0 0 0 1.5px #3b2c24; }
+  .tablet img { width: 100%; border-radius: 16px; }
+
+  /* ---------- 1 cover ---------- */
+  .cover { background: radial-gradient(70% 80% at 72% 50%, #4a2516 0%, var(--esp) 62%); }
+  .cover .glow { position: absolute; right: 120px; top: 120px; width: 520px; height: 520px; border-radius: 50%; background: radial-gradient(closest-side, rgb(242 106 52 / .35), transparent); }
+  .cover .top { position: absolute; left: 70px; top: 54px; display: flex; align-items: center; gap: 16px; font-family: var(--mono); font-size: 10px; letter-spacing: .25em; color: rgb(251 243 228 / .6); font-weight: 700; }
+  .cover .top hr { width: 40px; border: 0; border-top: 1px solid rgb(251 243 228 / .35); }
+  .cover .left { position: absolute; left: 70px; top: 128px; width: 520px; }
+  .cover .logo { width: 170px; margin: 10px 0 18px -14px; }
+  .cover h1 { font-family: var(--serif); font-size: 70px; line-height: 1; letter-spacing: -.02em; }
+  .cover h1 .s { display: block; font-size: 46px; margin-top: 14px; color: var(--hot); }
+  .cover .left p { margin-top: 26px; width: 470px; font-size: 14px; color: rgb(251 243 228 / .82); }
+  .cover .meta { position: absolute; left: 70px; bottom: 48px; display: flex; gap: 46px; }
+  .cover .meta small { display: block; font-family: var(--mono); font-weight: 700; font-size: 8.5px; letter-spacing: .22em; color: rgb(251 243 228 / .5); margin-bottom: 4px; }
+  .cover .meta div { font-size: 12.5px; }
+  .cover .archwrap { position: absolute; right: 116px; top: 92px; width: 380px; height: 640px; }
+  .cover .ring1, .cover .ring2 { position: absolute; border: 1px solid rgb(242 106 52 / .45); border-bottom: 0; border-radius: 999px 999px 0 0; }
+  .cover .ring1 { inset: -34px -34px 40px -62px; } .cover .ring2 { inset: -62px -62px 80px -100px; opacity: .55; }
+  .cover .bigarch { position: absolute; inset: 0; border-radius: 999px 999px 0 0; overflow: hidden; background: #120c09; }
+  .cover .bigarch img { width: 100%; height: 100%; object-fit: cover; object-position: 45% 50%; }
+  .cover .circ { position: absolute; left: -88px; top: 380px; width: 150px; height: 150px; border-radius: 50%; overflow: hidden; border: 5px solid var(--esp); }
+  .cover .stamp { position: absolute; right: -56px; bottom: 40px; width: 150px; height: 150px; border-radius: 50%; background: var(--cream); display: grid; place-items: center; box-shadow: 0 20px 40px -20px #000; }
+  .cover .stamp svg { position: absolute; inset: 0; }
+  .cover .stamp img { width: 64px; }
+  .cover .note { position: absolute; right: 70px; top: 46px; font-family: var(--script); color: var(--hot); font-size: 17px; line-height: 1.6; transform: rotate(-6deg); text-align: center; }
+
+  /* ---------- 2 note + toc ---------- */
+  .p2 .left { position: absolute; left: 70px; top: 76px; width: 560px; }
+  .p2 .left .h { margin: 16px 0 20px; font-size: 34px; }
+  .p2 .left .h .s { margin-top: 6px; }
+  .p2 .left p { margin-bottom: 12px; font-size: 13.5px; }
+  .p2 .sign { font-family: var(--script); color: var(--deep); font-size: 22px; margin-top: 14px; }
+  .stats { position: absolute; left: 70px; bottom: 74px; display: flex; gap: 22px; }
+  .stats div { width: 138px; border-top: 2px solid var(--ink); padding-top: 10px; }
+  .stats b { display: block; font-family: var(--serif); font-weight: 400; font-size: 32px; line-height: 1.1; }
+  .stats span { font-size: 11px; opacity: .72; }
+  .polaroid { position: absolute; z-index: 3; padding: 9px 9px 0; background: #fffdf8; box-shadow: 0 20px 34px -16px rgb(60 25 10 / .55); }
+  .polaroid img { width: 100%; aspect-ratio: 1 / 1.08; object-fit: cover; }
+  .polaroid p { font-family: var(--script); font-size: 12.5px; text-align: center; padding: 10px 0 12px; color: var(--brown); }
+  .toc { position: absolute; right: 54px; top: 54px; bottom: 54px; width: 410px; border-radius: 20px; background: var(--esp); color: var(--cream); padding: 38px 40px; }
+  .toc small { font-family: var(--mono); font-weight: 700; font-size: 9.5px; letter-spacing: .22em; color: rgb(251 243 228 / .5); }
+  .toc h3 { font-family: var(--serif); font-size: 24px; margin: 10px 0 14px; }
+  .toc h3 .s { font-size: 18px; color: var(--hot); }
+  .toc li { list-style: none; display: grid; grid-template-columns: 38px 1fr auto; padding: 8.6px 0; border-bottom: 1px solid rgb(251 243 228 / .1); font-size: 13px; }
+  .toc li em { font-style: normal; font-family: var(--serif); color: var(--hot); }
+  .toc li span:last-child { opacity: .45; font-size: 11px; }
+  .toc .foot { position: absolute; left: 40px; bottom: 34px; font-family: var(--script); color: var(--hot); font-size: 14px; }
+
+  /* ---------- 3 why ---------- */
+  .p3 .h { position: absolute; left: 70px; top: 80px; width: 640px; font-size: 44px; }
+  .p3 .intro { position: absolute; left: 70px; top: 236px; width: 640px; font-size: 14.5px; }
+  .p3 .archimg { position: absolute; right: 70px; top: 76px; width: 290px; height: 330px; }
+  .steps { position: absolute; left: 70px; right: 70px; top: 440px; display: grid; grid-template-columns: repeat(4, 1fr); text-align: center; }
+  .steps::before { content: ""; position: absolute; left: 12%; right: 12%; top: 32px; border-top: 1.5px dashed rgb(28 20 16 / .3); }
+  .steps .ic { position: relative; width: 64px; height: 64px; margin: 0 auto 12px; border-radius: 50%; background: var(--esp); display: grid; place-items: center; }
+  .steps .ic svg { width: 26px; height: 26px; stroke: var(--cream); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .steps b { display: block; font-family: var(--serif); font-weight: 400; font-size: 18px; }
+  .steps span { font-size: 12px; opacity: .72; }
+  .p3 .line { position: absolute; left: 0; right: 0; top: 590px; text-align: center; font-family: var(--serif); font-size: 16px; }
+  .p3 .line .s { font-size: 14px; color: var(--deep); transform: none; }
+  .cards3 { position: absolute; left: 70px; right: 70px; bottom: 62px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .cards3 div { padding: 16px 20px; border-radius: 14px; background: var(--paper); font-size: 12px; }
+  .cards3 b { display: block; font-size: 13.5px; margin-bottom: 4px; }
+
+  /* ---------- 4 meet ---------- */
+  .p4 .left { position: absolute; left: 70px; top: 92px; width: 300px; }
+  .p4 .left .h { margin: 14px 0 22px; font-size: 38px; }
+  .nlist li { list-style: none; display: grid; grid-template-columns: 34px 1fr; gap: 10px; padding: 12px 0; border-top: 1px solid rgb(251 243 228 / .14); font-size: 12.5px; color: rgb(251 243 228 / .78); }
+  .nlist b { display: block; color: var(--cream); font-size: 14px; margin-bottom: 2px; }
+  .dot { width: 26px; height: 26px; border-radius: 50%; background: var(--orange); color: var(--ink); display: grid; place-items: center; font-weight: 800; font-size: 12px; box-shadow: 0 0 0 5px rgb(242 106 52 / .25); }
+  .p4 .shot { position: absolute; left: 410px; top: 110px; width: 650px; }
+  .p4 .screen { position: relative; }
+  .p4 .screen img { width: 100%; }
+  .p4 .screen .dot { position: absolute; translate: -50% -50%; }
+  .p4 .cap { position: absolute; left: 410px; top: 560px; font-size: 12px; color: rgb(251 243 228 / .65); }
+  .p4 .scrip { position: absolute; right: 70px; top: 590px; font-family: var(--script); color: var(--hot); font-size: 16px; }
+
+  /* ---------- 5 walkthrough ---------- */
+  .p5 .h { position: absolute; left: 70px; top: 76px; font-size: 42px; width: 520px; }
+  .p5 .intro { position: absolute; right: 70px; top: 96px; width: 380px; font-size: 14px; }
+  .tiles { position: absolute; left: 70px; right: 70px; top: 248px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 26px 20px; }
+  .tiles figure img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: top; border-radius: 10px; box-shadow: 0 16px 26px -18px rgb(60 25 10 / .6); }
+  .tiles figcaption { margin-top: 9px; font-size: 11px; line-height: 1.4; }
+  .tiles figcaption b { display: block; font-family: var(--serif); font-weight: 400; font-size: 15px; margin-bottom: 2px; }
+  .tiles figcaption em { font-style: normal; color: var(--orange); font-family: var(--mono); font-weight: 700; margin-right: 6px; font-size: 11px; }
+
+  /* ---------- 6 it moves ---------- */
+  .p6 .h { position: absolute; left: 70px; top: 76px; font-size: 42px; width: 560px; }
+  .p6 .intro { position: absolute; right: 70px; top: 96px; width: 380px; font-size: 14px; color: rgb(251 243 228 / .8); }
+  .film { position: absolute; left: 0; right: 0; top: 262px; height: 196px; background: #0d0806; display: flex; gap: 14px; padding: 22px 60px; }
+  .film::before, .film::after { content: ""; position: absolute; left: 0; right: 0; height: 9px; background: repeating-linear-gradient(90deg, #4a3a32 0 14px, transparent 14px 28px); }
+  .film::before { top: 6px; } .film::after { bottom: 6px; }
+  .film img { flex: 1; min-width: 0; height: 152px; object-fit: cover; border-radius: 4px; }
+  .frames { position: absolute; left: 60px; right: 60px; top: 478px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .frames small { font-family: var(--mono); font-weight: 700; color: var(--hot); font-size: 10px; letter-spacing: .14em; }
+  .frames b { display: block; font-family: var(--serif); font-weight: 400; font-size: 17px; margin: 2px 0 4px; }
+  .frames p { font-size: 12px; color: rgb(251 243 228 / .72); }
+  .alls { position: absolute; left: 60px; right: 60px; top: 604px; border-top: 1px solid rgb(251 243 228 / .14); padding-top: 18px; display: grid; grid-template-columns: 250px 1fr; gap: 30px; }
+  .alls p { font-size: 11.5px; color: rgb(251 243 228 / .7); }
+  .alls p b { display: block; font-family: var(--mono); color: var(--hot); letter-spacing: .16em; font-size: 10px; margin-bottom: 6px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 7px; }
+  .dark .chip { border: 1px solid rgb(251 243 228 / .28); color: rgb(251 243 228 / .85); }
+
+  /* ---------- 7 making of ---------- */
+  .p7 { background: var(--cream); }
+  .p7 .h { position: absolute; left: 70px; top: 70px; font-size: 42px; width: 520px; }
+  .p7 .intro { position: absolute; right: 70px; top: 86px; width: 420px; font-size: 13.5px; }
+  .bands { position: absolute; left: 0; right: 0; top: 236px; bottom: 0; display: grid; grid-template-columns: repeat(3, 1fr); }
+  .band { position: relative; padding: 70px 36px 0; }
+  .band:nth-child(1) { background: var(--paper); } .band:nth-child(2) { background: var(--orange); } .band:nth-child(3) { background: var(--esp); color: var(--cream); }
+  .band .big { font-family: var(--serif); font-size: 64px; line-height: 1; }
+  .band .lab { font-family: var(--mono); font-weight: 700; font-size: 10px; letter-spacing: .2em; margin: 6px 0 18px; opacity: .75; }
+  .band img { width: 100%; height: 178px; object-fit: cover; border-radius: 12px; box-shadow: 0 20px 30px -18px rgb(0 0 0 / .6); }
+  .band h4 { font-family: var(--serif); font-weight: 400; font-size: 18px; margin-top: 16px; }
+  .band p { font-size: 12px; opacity: .78; }
+  .arc { position: absolute; left: 0; right: 0; top: 196px; height: 90px; z-index: 2; pointer-events: none; }
+
+  /* ---------- 8 menu ---------- */
+  .p8 { background: #efe6cf; }
+  .p8 .left { position: absolute; left: 70px; top: 82px; width: 330px; }
+  .p8 .left .h { margin: 14px 0 14px; font-size: 38px; }
+  .feat li { list-style: none; display: grid; grid-template-columns: 26px 1fr; gap: 10px; padding: 10px 0; border-top: 1px solid var(--line); font-size: 12px; }
+  .feat li svg { width: 18px; height: 18px; stroke: var(--ink); fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; margin-top: 2px; }
+  .feat b { display: block; font-size: 13px; }
+  .p8 .shot { position: absolute; left: 440px; top: 80px; width: 600px; }
+  .p8 .phonewrap { position: absolute; right: 52px; top: 290px; width: 196px; }
+  .p8 .note { position: absolute; left: 440px; top: 500px; width: 420px; padding: 14px 18px; border-radius: 12px; background: #f8f1df; font-size: 12px; }
+  .p8 .note em { font-family: var(--script); color: var(--deep); font-style: normal; margin-right: 8px; font-size: 13px; }
+  .legend { position: absolute; left: 440px; top: 610px; display: flex; gap: 22px; align-items: center; font-size: 12px; }
+  .diet { display: inline-block; width: 15px; height: 15px; border: 2px solid currentColor; border-radius: 3px; position: relative; vertical-align: -3px; margin-right: 7px; background: #fff; }
+  .diet::after { content: ""; position: absolute; inset: 2.5px; border-radius: 50%; background: currentColor; }
+  .veg { color: #1c8a3b; } .nonveg { color: #a7321f; } .nonveg::after { border-radius: 0; inset: 2px 1.5px 2.5px; clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+
+  /* ---------- 9 devices ---------- */
+  .p9 .h { position: absolute; left: 70px; top: 76px; font-size: 40px; width: 600px; }
+  .p9 .intro { position: absolute; right: 70px; top: 90px; width: 400px; font-size: 13.5px; color: rgb(251 243 228 / .8); }
+  .devs { position: absolute; left: 70px; right: 70px; top: 248px; display: flex; justify-content: space-between; align-items: flex-end; }
+  .devs figure { text-align: center; }
+  .devs figcaption { margin-top: 14px; font-size: 13px; }
+  .devs figcaption span { display: block; font-size: 11.5px; color: rgb(251 243 228 / .6); }
+
+  /* ---------- 10 details ---------- */
+  .p10 { background: #efe6cf; }
+  .p10 .h { position: absolute; left: 70px; top: 76px; font-size: 42px; width: 560px; }
+  .p10 .intro { position: absolute; right: 70px; top: 104px; width: 360px; font-size: 13.5px; }
+  .grid8 { position: absolute; left: 70px; right: 70px; top: 268px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+  .grid8 > div { min-height: 214px; padding: 20px 20px; border-radius: 14px; background: #f8f1df; }
+  .grid8 .ic { width: 44px; height: 44px; border-radius: 50%; background: var(--esp); display: grid; place-items: center; margin-bottom: 16px; }
+  .grid8 .ic svg { width: 20px; height: 20px; stroke: var(--cream); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .grid8 b { display: block; font-family: var(--serif); font-weight: 400; font-size: 17px; margin-bottom: 6px; line-height: 1.15; }
+  .grid8 p { font-size: 11.8px; opacity: .78; }
+  .open { display: inline-flex; align-items: center; gap: 8px; margin-top: 12px; padding: 6px 12px; border-radius: 999px; background: var(--esp); color: var(--cream); font-family: var(--mono); font-weight: 700; font-size: 9.5px; letter-spacing: .1em; }
+  .open i { width: 7px; height: 7px; border-radius: 50%; background: #2fb35a; box-shadow: 0 0 0 3px rgb(47 179 90 / .3); }
+
+  /* ---------- 11 seo ---------- */
+  .p11 .left { position: absolute; left: 70px; top: 76px; width: 500px; }
+  .p11 .left .h { margin: 14px 0 14px; font-size: 40px; }
+  .p11 .left > p { font-size: 13.5px; margin-bottom: 8px; }
+  .p11 .targets { position: absolute; left: 70px; top: 556px; width: 500px; border-top: 1px solid var(--line); padding-top: 14px; }
+  .p11 .targets small { font-family: var(--mono); font-weight: 700; font-size: 9.5px; letter-spacing: .2em; }
+  .p11 .targets .chips { margin-top: 10px; }
+  .p11 .targets .chip { background: #efe6cf; font-size: 11px; padding: 6px 12px; }
+  .p11 .right { position: absolute; right: 70px; top: 76px; width: 450px; }
+  .cap2 { font-family: var(--mono); font-weight: 700; font-size: 9px; letter-spacing: .2em; opacity: .55; margin-bottom: 10px; }
+  .serp { padding: 16px 22px 18px; border-radius: 14px; background: #fff; box-shadow: 0 20px 40px -24px rgb(60 25 10 / .4); font-family: Arial, Helvetica, sans-serif; }
+  .serp .q { display: flex; align-items: center; gap: 10px; padding: 9px 16px; border-radius: 999px; border: 1px solid #dfe1e5; font-size: 13px; color: #202124; margin-bottom: 16px; }
+  .serp .site { display: flex; align-items: center; gap: 10px; font-size: 12px; color: #202124; }
+  .serp .site img { width: 26px; height: 26px; border-radius: 50%; background: #fbf3e4; border: 1px solid #eee; }
+  .serp .site small { display: block; color: #4d5156; font-size: 11px; }
+  .serp h5 { font-weight: 400; color: #1a0dab; font-size: 17px; line-height: 1.3; margin: 8px 0 4px; }
+  .serp p { font-size: 12px; color: #4d5156; line-height: 1.5; }
+  .serp .sl { display: flex; gap: 8px; margin-top: 12px; }
+  .serp .sl span { padding: 5px 12px; border-radius: 999px; border: 1px solid #dadce0; color: #1a0dab; font-size: 11px; }
+  .wa { margin-top: 26px; padding: 14px 18px; border-radius: 14px; background: #e9e2d6; }
+  .wa .bub { margin-left: auto; width: 270px; border-radius: 10px; background: #d9fdd3; padding: 5px; box-shadow: 0 2px 3px rgb(0 0 0 / .1); font-family: Arial, Helvetica, sans-serif; }
+  .wa .card { border-radius: 7px; overflow: hidden; background: #cfeec7; }
+  .wa .card img { width: 100%; }
+  .wa .card div { padding: 8px 10px 10px; font-size: 11px; color: #3b4a3a; }
+  .wa .card b { display: block; color: #111; font-size: 12px; margin-bottom: 2px; }
+  .wa .link { padding: 6px 6px 2px; font-size: 11px; color: #027eb5; }
+  .wa .time { text-align: right; font-size: 9.5px; color: #667781; padding: 0 6px 2px; }
+
+  /* ---------- 12 plan ---------- */
+  .p12 .h { position: absolute; left: 70px; top: 76px; font-size: 42px; width: 520px; }
+  .p12 .intro { position: absolute; right: 70px; top: 96px; width: 400px; font-size: 13.5px; color: rgb(251 243 228 / .8); }
+  .tl { position: absolute; left: 70px; right: 70px; top: 270px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+  .tl::before { content: ""; position: absolute; left: 18px; right: 0; top: 17px; border-top: 1.5px solid var(--orange); opacity: .7; }
+  .tl .node { position: relative; width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid var(--hot); background: var(--esp); display: grid; place-items: center; margin-bottom: 22px; }
+  .tl .node::after { content: ""; width: 12px; height: 12px; border-radius: 50%; background: var(--hot); }
+  .tl small { font-family: var(--mono); font-weight: 700; color: var(--hot); font-size: 10px; letter-spacing: .18em; }
+  .tl h4 { font-family: var(--serif); font-weight: 400; font-size: 23px; margin: 4px 0 12px; }
+  .tl li { list-style: none; position: relative; padding-left: 16px; margin-bottom: 9px; font-size: 12px; color: rgb(251 243 228 / .82); }
+  .tl li::before { content: ""; position: absolute; left: 0; top: 6px; width: 7px; height: 7px; background: var(--orange); }
+  .boxes2 { position: absolute; left: 70px; right: 70px; bottom: 70px; display: grid; grid-template-columns: 1fr 1fr; gap: 26px; }
+  .boxes2 > div { display: grid; grid-template-columns: 34px 1fr; gap: 14px; padding: 22px 26px; border-radius: 14px; font-size: 12.5px; color: rgb(251 243 228 / .8); }
+  .boxes2 > div:first-child { background: #3a2419; } .boxes2 > div:last-child { border: 1px solid rgb(242 106 52 / .55); }
+  .boxes2 b { display: block; color: var(--cream); font-size: 14px; margin-bottom: 4px; }
+  .boxes2 svg { width: 28px; height: 28px; stroke: var(--hot); fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* ---------- 13 included ---------- */
+  .p13 { background: #efe6cf; }
+  .p13 .h { position: absolute; left: 70px; top: 70px; font-size: 42px; }
+  .lists { position: absolute; left: 70px; top: 196px; display: grid; grid-template-columns: 362px 362px; gap: 20px; }
+  .lists > div { padding: 24px 26px 14px; border-radius: 16px; background: #f8f1df; }
+  .lists h4 { display: flex; justify-content: space-between; align-items: baseline; font-family: var(--serif); font-weight: 400; font-size: 21px; margin-bottom: 8px; }
+  .lists h4 small { font-family: var(--mono); font-weight: 700; color: var(--deep); font-size: 9.5px; letter-spacing: .2em; }
+  .lists .check { padding: 7.5px 0; font-size: 12.5px; }
+  .p13 .archimg { position: absolute; right: 70px; top: 70px; width: 230px; height: 360px; }
+  .invest { position: absolute; right: 70px; top: 452px; width: 230px; padding: 22px; border-radius: 14px; background: var(--esp); color: var(--cream); }
+  .invest small { font-family: var(--mono); font-weight: 700; color: var(--hot); font-size: 9.5px; letter-spacing: .2em; }
+  .invest h4 { font-family: var(--serif); font-weight: 400; font-size: 21px; margin: 8px 0 8px; line-height: 1.15; }
+  .invest h4 .s { font-size: 15px; color: var(--hot); }
+  .invest p { font-size: 11.5px; color: rgb(251 243 228 / .75); }
+
+  /* ---------- 14 next ---------- */
+  .p14 .h { position: absolute; left: 70px; top: 70px; font-size: 42px; }
+  .stepsx { position: absolute; left: 70px; right: 70px; top: 196px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+  .stepsx > div { position: relative; min-height: 250px; padding: 24px 22px; border-radius: 14px; background: #f1e6cd; }
+  .stepsx > div:last-child { background: var(--esp); color: var(--cream); }
+  .stepsx > div:not(:last-child)::after { content: "→"; position: absolute; right: -14px; top: 50px; font-size: 13px; opacity: .45; }
+  .stepsx .num { font-family: var(--serif); font-size: 46px; line-height: 1; color: var(--deep); }
+  .stepsx > div:last-child .num { color: var(--hot); }
+  .stepsx small { display: block; margin-top: 18px; font-family: var(--mono); font-weight: 700; font-size: 9.5px; letter-spacing: .2em; opacity: .65; }
+  .stepsx b { display: block; font-family: var(--serif); font-weight: 400; font-size: 18px; margin: 4px 0 6px; }
+  .stepsx p { font-size: 12px; opacity: .8; }
+  .need { position: absolute; left: 70px; top: 486px; width: 620px; }
+  .need h4 { font-family: var(--serif); font-weight: 400; font-size: 21px; margin-bottom: 8px; }
+  .need .cols { display: grid; grid-template-columns: 1fr 1fr; column-gap: 26px; }
+  .need .check { font-size: 12.5px; padding: 8px 0; }
+  .honest { position: absolute; right: 70px; top: 486px; width: 330px; padding: 20px 22px; border-radius: 14px; border: 1.5px dashed rgb(28 20 16 / .3); font-size: 12px; }
+  .honest b { display: block; font-size: 13.5px; margin-bottom: 6px; }
+
+  /* ---------- 15 thanks ---------- */
+  .p15 { background: radial-gradient(70% 80% at 25% 40%, #3e2015, var(--esp) 65%); }
+  .p15 h1 { position: absolute; left: 70px; top: 110px; font-family: var(--serif); font-size: 96px; line-height: 1; letter-spacing: -.02em; }
+  .p15 .sub { position: absolute; left: 74px; top: 236px; font-family: var(--script); color: var(--hot); font-size: 30px; transform: rotate(-3deg); transform-origin: left; }
+  .p15 .txt { position: absolute; left: 70px; top: 330px; width: 500px; font-size: 14.5px; color: rgb(251 243 228 / .8); }
+  .three { position: absolute; left: 70px; top: 448px; display: grid; grid-template-columns: repeat(3, 168px); gap: 18px; }
+  .three div { border-top: 1.5px solid var(--hot); padding-top: 12px; font-size: 11.5px; color: rgb(251 243 228 / .7); }
+  .three b { display: block; font-family: var(--serif); font-weight: 400; font-size: 17px; color: var(--cream); margin-bottom: 4px; }
+  .p15 .made { position: absolute; left: 70px; bottom: 60px; display: flex; gap: 60px; align-items: flex-end; }
+  .p15 .made small { display: block; font-family: var(--mono); font-weight: 700; font-size: 9px; letter-spacing: .22em; color: rgb(251 243 228 / .5); margin-bottom: 10px; }
+  .p15 .made .kiwi { font-size: 22px; } .p15 .made .kiwi svg { width: 32px; height: 32px; }
+  .p15 .mail { font-family: var(--serif); font-size: 22px; }
+  .p15 .a1 { position: absolute; right: 236px; top: 86px; width: 236px; height: 450px; }
+  .p15 .a2 { position: absolute; right: 62px; top: 290px; width: 216px; height: 400px; border: 6px solid var(--esp); }
+  .p15 .glogo { position: absolute; right: 300px; bottom: 50px; width: 140px; }
+  .p15 .foot { position: absolute; right: 70px; bottom: 30px; font-family: var(--mono); font-weight: 700; font-size: 8.5px; letter-spacing: .22em; color: rgb(251 243 228 / .45); }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <symbol id="kiwi" viewBox="0 0 40 40"><circle cx="20" cy="20" r="19" fill="#5d8a2a"/><circle cx="20" cy="20" r="16" fill="#9ccc3c"/><circle cx="20" cy="20" r="6" fill="#f3f7d9"/><g fill="#2b2412"><ellipse cx="20" cy="9.5" rx="1.1" ry="2"/><ellipse cx="20" cy="30.5" rx="1.1" ry="2"/><ellipse cx="9.5" cy="20" rx="2" ry="1.1"/><ellipse cx="30.5" cy="20" rx="2" ry="1.1"/><ellipse cx="12.6" cy="12.6" rx="1.1" ry="2" transform="rotate(-45 12.6 12.6)"/><ellipse cx="27.4" cy="27.4" rx="1.1" ry="2" transform="rotate(-45 27.4 27.4)"/><ellipse cx="27.4" cy="12.6" rx="1.1" ry="2" transform="rotate(45 27.4 12.6)"/><ellipse cx="12.6" cy="27.4" rx="1.1" ry="2" transform="rotate(45 12.6 27.4)"/></g></symbol>
+    <symbol id="slice" viewBox="0 0 64 64"><path d="M32 9 20.5 30.5q-1.1 2.1 1.1 1.8l3.4-.7 7-13 7 13 3.4.7q2.2.3 1.1-1.8Z" fill="currentColor"/><path d="M11 38.5q21 8.5 42 0l2.5 2Q54 52 32 54.5 10 52 8.5 40.5Z" fill="currentColor"/></symbol>
+  </defs>
+</svg>
+
+<!-- ============ 1 · COVER ============ -->
+<section class="page dark cover">
+  <div class="glow"></div>
+  <div class="top"><span class="kiwi" style="color:var(--cream);letter-spacing:0;font-family:var(--sans);font-size:14px"><svg><use href="#kiwi"/></svg><span><b>Kiwi</b>Bytes</span></span><hr />WEBSITE PROPOSAL</div>
+  <div class="left">
+    <div style="font-family:var(--mono);font-weight:700;font-size:9.5px;letter-spacing:.24em;color:rgb(251 243 228 / .55)">PREPARED FOR</div>
+    <img class="logo" src="assets/logo-cream.png" alt="Grana Pizzeria by Abramatt" />
+    <h1>Grana Pizzeria,<span class="s">now open online.</span></h1>
+    <p>We designed and built a brand-new website for Grana Pizzeria by Abramatt. It is ready today. This booklet shows you what it does, and how we will help more people in Kochi find you over the next twelve months.</p>
+  </div>
+  <div class="meta">
+    <div><small>PREPARED FOR</small>Grana Pizzeria by Abramatt</div>
+    <div><small>PREPARED BY</small>KiwiBytes</div>
+    <div><small>DATE</small>November 2026</div>
+  </div>
+  <div class="note">already built,<br />just for you ↓</div>
+  <div class="archwrap">
+    <div class="ring2"></div><div class="ring1"></div>
+    <div class="bigarch"><img src="assets/serve.jpg" alt="" /></div>
+    <div class="circ"><img class="fill" src="assets/tiramisu.jpg" alt="" /></div>
+    <div class="stamp">
+      <svg viewBox="0 0 150 150"><defs><path id="st" d="M75 75m-58 0a58 58 0 1 1 116 0a58 58 0 1 1-116 0"/></defs><text font-family="Courier Prime, monospace" font-weight="700" font-size="10.5" fill="#1c1410" letter-spacing="0"><textPath href="#st" textLength="364" lengthAdjust="spacing">MADE FOR GRANA · PANAMPILLY NAGAR · 2026 · </textPath></text></svg>
+      <img src="assets/logo.png" alt="" />
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2 · NOTE + CONTENTS ============ -->
+<section class="page cream p2">
+  <div class="left">
+    <div class="kick o">A short note</div>
+    <h2 class="h">We didn’t bring a sales pitch.<br /><span class="s">We brought your website.</span></h2>
+    <p>Thank you for making time to meet us.</p>
+    <p>We are <b>KiwiBytes</b>, a small freelance web team. Grana already has what people love: Neapolitan pizza from the orange-tiled, wood-fired oven, an open kitchen on 1st Cross Road, boxes that say “It’s all about the base!”, and even a pookalam that spelled Gran-Onam. What it doesn’t have yet is <b>a home of its own online</b>.</p>
+    <p>So instead of slides about what a website <i>could</i> be, we built the real thing, made only for Grana. It is finished, it works on every phone, tablet and computer, and it is ready to go live with your own menu and photos.</p>
+    <p>Along with the website, we are offering <b>one full year of SEO</b>: steady work that helps Grana show up when people in Kochi search Google for pizza.</p>
+    <div class="sign">— Team KiwiBytes</div>
+  </div>
+  <div class="stats">
+    <div><b>100%</b><span>made only for Grana</span></div>
+    <div><b>2 pages</b><span>Home and a full menu with 40 dishes</span></div>
+    <div><b>12</b><span>months of SEO included</span></div>
+  </div>
+  <div class="polaroid" style="left:548px;top:512px;width:136px;rotate:5deg"><img src="assets/pizzaiolo.jpg" alt="" /><p>into the fire</p></div>
+  <div class="toc">
+    <small>INSIDE THIS BOOKLET</small>
+    <h3>Twelve short pages. <span class="s">No jargon.</span></h3>
+    <ol>
+      <li><em>01</em><span>Why Grana needs a website</span><span>3</span></li>
+      <li><em>02</em><span>Meet your new website</span><span>4</span></li>
+      <li><em>03</em><span>A walk through the home page</span><span>5</span></li>
+      <li><em>04</em><span>It moves: the animations</span><span>6</span></li>
+      <li><em>05</em><span>From dough ball to done</span><span>7</span></li>
+      <li><em>06</em><span>A menu with photos</span><span>8</span></li>
+      <li><em>07</em><span>Perfect on every phone and tablet</span><span>9</span></li>
+      <li><em>08</em><span>Small things that bring guests in</span><span>10</span></li>
+      <li><em>09</em><span>Easy to find on Google</span><span>11</span></li>
+      <li><em>10</em><span>Your first year of SEO</span><span>12</span></li>
+      <li><em>11</em><span>Everything included</span><span>13</span></li>
+      <li><em>12</em><span>Next steps</span><span>14</span></li>
+    </ol>
+    <div class="foot">about 5 minutes to read 🍕</div>
+  </div>
+  <div class="pf"><span>GRANA × KIWIBYTES</span><span class="n">02</span></div>
+</section>
+
+<!-- ============ 3 · WHY ============ -->
+<section class="page cream p3">
+  <div class="ph"><span><b>01</b>WHY A WEBSITE</span><span>GRANA × KIWIBYTES</span></div>
+  <h2 class="h">Right now, other websites<br />tell <span class="s">your story.</span></h2>
+  <p class="intro">When someone searches <b>“Grana Pizzeria Kochi”</b> or <b>“pizza in Panampilly Nagar”</b>, they find you on Google Maps, Zomato, Swiggy, Justdial and food blogs. These help, but <b>none of them belong to you</b>. You can’t choose the photos, the menu may be missing or old, and your story gets lost between hundreds of other places.</p>
+  <div class="arch archimg"><img src="assets/box-stack.jpg" alt="" /></div>
+  <div class="steps">
+    <div><div class="ic"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></div><b>1. Search</b><span>“Best pizza near me”</span></div>
+    <div><div class="ic"><svg viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></div><b>2. Look</b><span>Photos, pizzas and prices</span></div>
+    <div><div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><b>3. Check</b><span>Open now? Where is it?</span></div>
+    <div><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/></svg></div><b>4. Visit or order</b><span>Call, takeaway or directions</span></div>
+  </div>
+  <p class="line">This is how guests choose where to eat. <span class="s">Your website answers all four, in one place you own.</span></p>
+  <div class="cards3">
+    <div><b><span class="redsq"></span>No home of your own</b>Today guests only see what other sites decide to show about Grana.</div>
+    <div><b><span class="redsq"></span>The menu is hard to find</b>Most people want to see the pizzas and the prices before they walk in or order.</div>
+    <div><b><span class="redsq"></span>Easy to miss</b>A proper website makes a place look trusted, and helps Google show it more often.</div>
+  </div>
+  <div class="pf"><span>728/A POORNIMA BUILDING · 1ST CROSS ROAD · PANAMPILLY NAGAR</span><span class="n">03</span></div>
+</section>
+
+<!-- ============ 4 · MEET ============ -->
+<section class="page dark p4">
+  <div class="ph"><span><b>02</b>MEET YOUR NEW WEBSITE</span><span>GRANA × KIWIBYTES</span></div>
+  <div class="left">
+    <div class="kick">The home page</div>
+    <h2 class="h">Built from scratch,<br /><span class="s">only for Grana.</span></h2>
+    <ol class="nlist">
+      <li><span class="dot">1</span><div><b>Your logo, front and centre</b>Guests are welcomed by your logo, GRANA PIZZERIA in big letters, and a pizza that rolls in.</div></li>
+      <li><span class="dot">2</span><div><b>A live “Open now” sign</b>Works on Kochi time: open now, closing soon, or opens at 12.</div></li>
+      <li><span class="dot">3</span><div><b>One-tap call</b>On a phone, one tap rings 081293 40091 for takeaway.</div></li>
+      <li><span class="dot">4</span><div><b>Menu, one click away</b>Guests go straight from “hungry” to “what should I order?”</div></li>
+    </ol>
+  </div>
+  <div class="shot browser">
+    <div class="bar"><i></i><i></i><i></i><span>granapizzeria.in</span></div>
+    <div class="screen">
+      <img src="assets/d-hero.jpg" alt="Grana website home page" />
+      <span class="dot" style="left:66%;top:19%">1</span><span class="dot" style="left:15.5%;top:85.1%">2</span><span class="dot" style="left:79.5%;top:5.1%">3</span><span class="dot" style="left:1.6%;top:78.0%">4</span>
+    </div>
+  </div>
+  <p class="cap">The real website, as it looks on a laptop today. Turn the page to scroll through it.</p>
+  <p class="scrip">your colours, your logo ↑</p>
+  <div class="pf"><span>DESIGNED &amp; BUILT BY KIWIBYTES</span><span class="n">04</span></div>
+</section>
+
+<!-- ============ 5 · WALKTHROUGH ============ -->
+<section class="page cream p5">
+  <div class="ph"><span><b>03</b>A WALK THROUGH THE HOME PAGE</span><span>GRANA × KIWIBYTES</span></div>
+  <h2 class="h">One page, <span class="s">the whole Grana story.</span></h2>
+  <p class="intro">Guests simply scroll. In under a minute they see your pizza, how it’s made, what people love, your hours and where to find you, told like a story instead of a list.</p>
+  <div class="tiles">
+    <figure><img src="assets/d-hero.jpg" alt="" /><figcaption><b><em>01</em>The welcome</b>Your logo, then the pizza rolls in.</figcaption></figure>
+    <figure><img src="assets/d-manifesto.jpg" alt="" /><figcaption><b><em>02</em>Your story</b>A warm intro that lights up word by word.</figcaption></figure>
+    <figure><img src="assets/d-story-4.jpg" alt="" /><figcaption><b><em>03</em>The making of</b>Real photos, from dough ball to fire.</figcaption></figure>
+    <figure><img src="assets/d-sig.jpg" alt="" /><figcaption><b><em>04</em>Signature dishes</b>The ones Kochi keeps ordering.</figcaption></figure>
+    <figure><img src="assets/d-box.jpg" alt="" /><figcaption><b><em>05</em>The Grana box</b>Opens as you scroll, with reheat tips.</figcaption></figure>
+    <figure><img src="assets/d-life.jpg" alt="" /><figcaption><b><em>06</em>Life at Grana</b>Your own photos, as polaroids to drag.</figcaption></figure>
+    <figure><img src="assets/d-guest.jpg" alt="" /><figcaption><b><em>07</em>The guestbook</b>Ratings, and what guests praise most.</figcaption></figure>
+    <figure><img src="assets/d-visit.jpg" alt="" /><figcaption><b><em>08</em>Come visit</b>Live pizza clock, address card and map.</figcaption></figure>
+  </div>
+  <div class="pf"><span>GRANAPIZZERIA.IN (EXAMPLE ADDRESS)</span><span class="n">05</span></div>
+</section>
+
+<!-- ============ 6 · IT MOVES ============ -->
+<section class="page dark p6">
+  <div class="ph"><span><b>04</b>IT MOVES</span><span>GRANA × KIWIBYTES</span></div>
+  <h2 class="h">Paper can’t show it,<br /><span class="s">so here it is, frame by frame.</span></h2>
+  <p class="intro">The website is <b>alive</b>. Things roll, open and glow as guests scroll. It is the kind of experience usually seen only on big restaurant brand websites, and it still opens quickly on a phone.</p>
+  <div class="film">
+    <img src="assets/f-intro.jpg" alt="" /><img src="assets/d-hero.jpg" alt="" /><img src="assets/d-hero-scroll.jpg" alt="" /><img src="assets/d-story-wipe.jpg" alt="" />
+  </div>
+  <div class="frames">
+    <div><small>Frame 1</small><b>The welcome</b><p>Your logo stamps in, then the shutter lifts.</p></div>
+    <div><small>Frame 2</small><b>The pizza rolls in</b><p>Letters flip up and the ingredients fly in.</p></div>
+    <div><small>Frame 3</small><b>Words part, pizza turns</b><p>As guests scroll, the words slide apart and the pizza spins.</p></div>
+    <div><small>Frame 4</small><b>Into the kitchen</b><p>Real photos wipe in, one chapter after another.</p></div>
+  </div>
+  <div class="alls">
+    <p><b>AND ALL THROUGH THE SITE</b>For anyone who turns off animations on their phone, the site stays calm and simple. We respect that setting.</p>
+    <div class="chips">
+      <span class="chip">A welcome screen with your logo</span><span class="chip">Pizza that tilts with the mouse</span><span class="chip">A 90-second oven timer</span><span class="chip">A pizza box that opens as you scroll</span><span class="chip">Polaroids you can drag</span><span class="chip">Buttons that lean toward the mouse</span><span class="chip">Tapes that speed up as you scroll</span><span class="chip">Photos that fade in, never flash</span>
+    </div>
+  </div>
+  <div class="pf"><span>DESIGNED &amp; BUILT BY KIWIBYTES</span><span class="n">06</span></div>
+</section>
+
+<!-- ============ 7 · DOUGH TO DONE ============ -->
+<section class="page p7">
+  <div class="ph" style="color:rgb(28 20 16 / .5)"><span><b>05</b>FROM DOUGH BALL TO DONE</span><span>GRANA × KIWIBYTES</span></div>
+  <h2 class="h">It’s all about the base.<br /><span class="s">So we show it being made.</span></h2>
+  <p class="intro">As guests scroll, real photos of a pizza being made slide in one after another: the dough, the stretch, the tomato, the fire and the finished pie. An oven timer counts to ninety. <b>In ten seconds, every guest understands why a Grana pizza tastes the way it does.</b></p>
+  <svg class="arc" viewBox="0 0 1123 90" preserveAspectRatio="none"><path d="M60 80 C 360 -10, 760 -10, 1063 80" fill="none" stroke="#b8401c" stroke-width="1.5" stroke-dasharray="5 7" opacity=".7"/><circle cx="200" cy="38" r="12" fill="#f4e7cf" stroke="#b8401c" stroke-width="1.5"/><circle cx="562" cy="14" r="13" fill="#e0582f"/><circle cx="925" cy="38" r="13" fill="#ffb347"/></svg>
+  <div class="bands">
+    <div class="band"><div class="big">01</div><div class="lab">THE DOUGH</div><img src="assets/d-story-1.jpg" alt="" /><h4>It starts with a ball of dough.</h4><p>Soft, rested and full of air.</p></div>
+    <div class="band"><div class="big">03</div><div class="lab">TOMATO &amp; FIOR DI LATTE</div><img src="assets/d-story-3.jpg" alt="" /><h4>Just enough, never too much.</h4><p>A thin spiral of tomato, then torn mozzarella.</p></div>
+    <div class="band"><div class="big" style="color:var(--hot)">90s</div><div class="lab">INTO THE FIRE</div><img src="assets/d-story-4.jpg" alt="" /><h4>Ninety seconds of fire.</h4><p>The rim puffs, blisters and gets its leopard spots.</p></div>
+  </div>
+  <div class="pf" style="color:rgb(251 243 228 / .55)"><span></span><span class="n">07</span></div>
+</section>
+
+<!-- ============ 8 · MENU ============ -->
+<section class="page p8 light">
+  <div class="ph" style="color:rgb(28 20 16 / .5)"><span><b>06</b>THE MENU PAGE</span><span>GRANA × KIWIBYTES</span></div>
+  <div class="left">
+    <div class="kick o">Its own page</div>
+    <h2 class="h">A menu guests can see,<br /><span class="s">before they taste.</span></h2>
+    <p style="font-size:13px;margin-bottom:14px">A full menu page with a photo for every dish, so guests arrive (or order) already knowing what they want.</p>
+    <ul class="feat">
+      <li><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 9"/></svg><div><b>A photo for every dish</b>40 dishes in 8 sections: pizza rossa, pizza bianca, pasta and more.</div></li>
+      <li><svg viewBox="0 0 24 24"><path d="M4 4l7 17 2-7 7-2Z"/></svg><div><b>Tap a dish, see it big</b>A close-up card with the description, price and a call button.</div></li>
+      <li><svg viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 4 13c0-6 7-9 16-9 0 9-3 16-9 16Z"/><path d="M4 20c4-6 8-9 12-11"/></svg><div><b>Veg / non-veg filter + search</b>One tap shows only veg dishes; type “truffle” to find it.</div></li>
+      <li><svg viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5Z"/><path d="m3 13 9 5 9-5"/></svg><div><b>A floating bar</b>Jump between the eight menu sections in one tap.</div></li>
+      <li><svg viewBox="0 0 24 24"><path d="M4 20h4L20 8l-4-4L4 16Z"/></svg><div><b>Easy to change</b>New pizza or new price? We update it for you.</div></li>
+    </ul>
+  </div>
+  <div class="shot browser"><div class="bar"><i></i><i></i><i></i><span>granapizzeria.in/menu</span></div><img src="assets/d-menu.jpg" alt="Menu page" style="width:100%" /></div>
+  <div class="phonewrap phone"><img src="assets/m-menu.jpg" alt="" /></div>
+  <div class="note"><em>note</em>Some dishes and prices in this preview are examples. Before launch we will put in your real menu, your prices and your own photos.</div>
+  <div class="legend"><span><i class="diet veg"></i>Veg</span><span><i class="diet nonveg"></i>Non-veg</span><span class="muted">Indian food marks on every dish</span></div>
+  <div class="pf" style="color:rgb(28 20 16 / .5)"><span>GRANAPIZZERIA.IN/MENU</span><span class="n">08</span></div>
+</section>
+
+<!-- ============ 9 · DEVICES ============ -->
+<section class="page dark p9">
+  <div class="ph"><span><b>07</b>ON EVERY PHONE AND TABLET</span><span>GRANA × KIWIBYTES</span></div>
+  <h2 class="h">Most guests will meet you<br /><span class="s">on their phone.</span></h2>
+  <p class="intro">Someone walking down Panampilly Avenue. A family deciding on dinner from the sofa. They will open your website on a phone or a tablet. So every section was designed again for small screens: <b>big text, big buttons, nothing to pinch or zoom</b>, and smooth scrolling on iPhone, Android and iPad.</p>
+  <div class="devs">
+    <figure><div class="phone" style="width:172px"><img src="assets/m-hero.jpg" alt="" /></div><figcaption>Home<span>Your logo &amp; pizza, front and centre</span></figcaption></figure>
+    <figure><div class="phone" style="width:172px"><img src="assets/m-story.jpg" alt="" /></div><figcaption>The making of<span>Real photos, dough to fire</span></figcaption></figure>
+    <figure><div class="phone" style="width:172px"><img src="assets/m-visit.jpg" alt="" /></div><figcaption>Visit<span>Live pizza clock · tap to call</span></figcaption></figure>
+    <figure><div class="tablet" style="width:268px"><img src="assets/t-hero.jpg" alt="" /></div><figcaption>On a tablet<span>Every section re-laid for iPad</span></figcaption></figure>
+  </div>
+  <div class="pf"><span>TESTED ON PHONES, TABLETS &amp; COMPUTERS</span><span class="n">09</span></div>
+</section>
+
+<!-- ============ 10 · DETAILS ============ -->
+<section class="page p10">
+  <div class="ph" style="color:rgb(28 20 16 / .5)"><span><b>08</b>BUILT-IN FEATURES</span><span>GRANA × KIWIBYTES</span></div>
+  <h2 class="h">Small details that <span class="s">bring guests through the door.</span></h2>
+  <p class="intro">Beautiful is good. Useful is better. Each of these answers a real question guests have before they visit or order.</p>
+  <div class="grid8">
+    <div><div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><b>Live open / closed sign</b><p>Shows “Open now”, “Closing soon” or “Opens 12 PM”, using Kochi time.</p><span class="open"><i></i>OPEN NOW</span></div>
+    <div><div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6.4 6.4"/></svg></div><b>A pizza clock</b><p>Eleven slices for the eleven open hours, with a live countdown to closing time.</p></div>
+    <div><div class="ic"><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg></div><b>Tap to call</b><p>One tap on a phone and it rings Grana. Perfect for takeaway orders.</p></div>
+    <div><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/></svg></div><b>Directions</b><p>Opens Google Maps with the route straight to 1st Cross Road.</p></div>
+    <div><div class="ic"><svg viewBox="0 0 24 24"><path d="M5 8h14l-1 13H6L5 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg></div><b>Swiggy &amp; Zomato</b><p>Delivery links on every page, one tap away from the menu.</p></div>
+    <div><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4Z"/><path d="M8 9h8M8 12h5"/></svg></div><b>Lovely WhatsApp previews</b><p>Share your link and a photo card with your name appears, not a plain link.</p></div>
+    <div><div class="ic"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7Z"/></svg></div><b>Opens fast</b><p>Pages are prepared in advance and photos are shrunk automatically and fade in smoothly, even on mobile data.</p></div>
+    <div><div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg></div><b>Your own web address</b><p>An easy name, for example <b style="display:inline;font-family:var(--sans);font-size:12px">granapizzeria.in</b>, to print on boxes, menus and bills.</p></div>
+  </div>
+  <div class="pf" style="color:rgb(28 20 16 / .5)"><span>BUILT WITH NEXT.JS · MODERN, SECURE AND FAST</span><span class="n">10</span></div>
+</section>
+
+<!-- ============ 11 · SEO ============ -->
+<section class="page cream p11">
+  <div class="ph"><span><b>09</b>EASY TO FIND ON GOOGLE</span><span>GRANA × KIWIBYTES</span></div>
+  <div class="left">
+    <div class="kick o">SEO, in plain words</div>
+    <h2 class="h">Ready for Google <span class="s">from day one.</span></h2>
+    <p><b>SEO</b> means helping Google understand your business, so it shows Grana to the right people. These are already built into your website:</p>
+    <div class="check"><span><b>Clear titles and descriptions</b> on every page. These are the words people read in Google results.</span></div>
+    <div class="check"><span><b>Your details in Google’s own format</b>: address, hours, menu, price range and type of food, so Google shows them correctly.</span></div>
+    <div class="check"><span><b>A menu Google can read</b>, dish by dish, with prices.</span></div>
+    <div class="check"><span><b>A site map</b> that tells Google about every page.</span></div>
+    <div class="check"><span><b>Fast and mobile-friendly.</b> Google ranks these higher.</span></div>
+    <div class="check"><span><b>Share cards</b> for WhatsApp, Facebook and Instagram stories.</span></div>
+  </div>
+  <div class="targets"><small>SEARCHES WE’LL TARGET</small> <span class="muted" style="font-size:11px">(real phrases people type)</span>
+    <div class="chips"><span class="chip">Grana Pizzeria Kochi</span><span class="chip">pizza in Panampilly Nagar</span><span class="chip">Neapolitan pizza Kochi</span><span class="chip">wood-fired pizza Kochi</span><span class="chip">best pizza in Kochi</span><span class="chip">pizza delivery Panampilly Nagar</span><span class="chip">Italian restaurant Kochi</span><span class="chip">tiramisu in Kochi</span></div>
+  </div>
+  <div class="right">
+    <div class="cap2">HOW IT CAN LOOK IN A SEARCH (ILLUSTRATION)</div>
+    <div class="serp">
+      <div class="q"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#70757a" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>grana pizzeria kochi</div>
+      <div class="site"><img src="assets/logo.png" alt="" /><div>Grana Pizzeria by Abramatt<small>https://granapizzeria.in</small></div></div>
+      <h5>Grana Pizzeria by Abramatt | Neapolitan Pizza in Panampilly Nagar, Kochi</h5>
+      <p>Neapolitan-style, wood-fired pizza in Panampilly Nagar, Kochi. Hand-stretched bases, fresh pasta, starters and tiramisu. Dine in, takeaway or order online.</p>
+      <div class="sl"><span>Menu</span><span>Opening hours</span><span>Directions</span></div>
+    </div>
+    <div class="cap2" style="margin-top:22px">HOW IT LOOKS WHEN SHARED ON WHATSAPP</div>
+    <div class="wa" style="margin-top:0">
+      <div class="bub">
+        <div class="card"><img src="assets/og.jpg" alt="" /><div><b>Grana Pizzeria by Abramatt: Neapolitan pizza in Kochi</b>Wood-fired pizza, fresh pasta and tiramisu on 1st Cross Road.</div></div>
+        <div class="link">granapizzeria.in</div><div class="time">8:12 PM ✓✓</div>
+      </div>
+    </div>
+  </div>
+  <div class="pf"><span>SEARCH RESULT SHOWN IS AN ILLUSTRATION</span><span class="n">11</span></div>
+</section>
+
+<!-- ============ 12 · SEO PLAN ============ -->
+<section class="page dark p12">
+  <div class="ph"><span><b>10</b>THE 12-MONTH SEO PLAN</span><span>GRANA × KIWIBYTES</span></div>
+  <h2 class="h">Twelve months of<br /><span class="s">steady, honest work.</span></h2>
+  <p class="intro">A website is the start. SEO is what brings people to it, month after month. Here is what we will do in your first year.</p>
+  <div class="tl">
+    <div><div class="node"></div><small>MONTH 1</small><h4>Launch</h4><ul><li>Your website goes live on your own web address</li><li>Connect Google Search Console and visitor stats</li><li>Update your Google Business Profile: website, menu link, hours and photos</li><li>Tell Google about every page</li></ul></div>
+    <div><div class="node"></div><small>MONTHS 2 – 3</small><h4>Foundation</h4><ul><li>Make your name, address and phone match everywhere: Google, Zomato, Swiggy, Justdial, District</li><li>Work on local searches like “pizza in Panampilly Nagar”</li><li>Fresh pizza photos on Google</li><li>Simple tips for replying to reviews</li></ul></div>
+    <div><div class="node"></div><small>MONTHS 4 – 6</small><h4>Growth</h4><ul><li>Seasonal updates: new pizzas, Onam, Christmas and New Year specials</li><li>Get Grana mentioned on Kochi food blogs and city guides</li><li>Improve pages based on what people really search</li></ul></div>
+    <div><div class="node"></div><small>MONTHS 7 – 12</small><h4>Stronger</h4><ul><li>Keep the menu, photos and hours fresh</li><li>Track where you appear on Google and keep improving</li><li>Get ready early for the festive season and the December rush</li></ul></div>
+  </div>
+  <div class="boxes2">
+    <div><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><div><b>Every month: a one-page report</b>In plain English: how many people visited, how many called you, and how many asked for directions.</div></div>
+    <div><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg><div><b>Our honest promise</b>SEO takes time, and no one can honestly guarantee the #1 spot on Google. What we promise is steady work every month and clear reports, so you always see what is happening.</div></div>
+  </div>
+  <div class="pf"><span>LISTINGS ARE UPDATED WITH YOUR PERMISSION AND ACCESS</span><span class="n">12</span></div>
+</section>
+
+<!-- ============ 13 · INCLUDED ============ -->
+<section class="page p13">
+  <div class="ph" style="color:rgb(28 20 16 / .5)"><span><b>11</b>EVERYTHING INCLUDED</span><span>GRANA × KIWIBYTES</span></div>
+  <h2 class="h">One package. <span class="s">Website &amp; a full year.</span></h2>
+  <div class="lists">
+    <div><h4>The website <small>READY NOW</small></h4>
+      <div class="check"><span>Custom design made only for Grana</span></div><div class="check"><span>Home page + full menu page with photos</span></div><div class="check"><span>Works on phones, tablets and computers</span></div><div class="check"><span>Premium animations and smooth scrolling</span></div><div class="check"><span>Your real menu, prices and photos added</span></div><div class="check"><span>Live open / closed sign and pizza clock</span></div><div class="check"><span>Call, directions, Swiggy and Zomato buttons</span></div><div class="check"><span>Google Map and Instagram link</span></div><div class="check"><span>Google-ready SEO set-up</span></div><div class="check"><span>WhatsApp and social share images</span></div><div class="check" style="border:0"><span>Launch on your own web address</span></div>
+    </div>
+    <div><h4>One year of SEO <small>12 MONTHS</small></h4>
+      <div class="check"><span>Google Business Profile set-up and tuning</span></div><div class="check"><span>Google Search Console and visitor stats</span></div><div class="check"><span>Work on local Kochi searches</span></div><div class="check"><span>Listing clean-up: Zomato, Swiggy, Justdial and more</span></div><div class="check"><span>Seasonal and festival updates</span></div><div class="check"><span>Menu, price and opening-hours changes</span></div><div class="check"><span>Mentions on food blogs and city guides</span></div><div class="check"><span>A plain-English report every month</span></div><div class="check"><span>Speed and health checks</span></div><div class="check" style="border:0"><span>Quick support by email</span></div>
+    </div>
+  </div>
+  <div class="arch archimg"><img src="assets/white-funghi.jpg" alt="" /></div>
+  <div class="invest"><small>INVESTMENT</small><h4>Let’s talk it through, <span class="s">in person.</span></h4><p>One simple package for the website and the full year of SEO. We’ll walk you through the price in our meeting and answer every question.</p></div>
+  <div class="pf" style="color:rgb(28 20 16 / .5)"><span>GRANA × KIWIBYTES</span><span class="n">13</span></div>
+</section>
+
+<!-- ============ 14 · NEXT STEPS ============ -->
+<section class="page cream p14">
+  <div class="ph"><span><b>12</b>NEXT STEPS</span><span>GRANA × KIWIBYTES</span></div>
+  <h2 class="h">From today to live, <span class="s">in days, not months.</span></h2>
+  <div class="stepsx">
+    <div><div class="num">1</div><small>TODAY</small><b>See it live</b><p>We show you the full website on a laptop, a tablet and a phone.</p></div>
+    <div><div class="num">2</div><small>YOU SHARE</small><b>Menu &amp; photos</b><p>Send your menu, prices, photos and anything you’d like changed.</p></div>
+    <div><div class="num">3</div><small>WE FINISH</small><b>Add &amp; polish</b><p>We add your real details and fine-tune every page.</p></div>
+    <div><div class="num">4</div><small>YOU CHECK</small><b>Approve it</b><p>Look through it on your own phone. Nothing goes live without your OK.</p></div>
+    <div><div class="num">5</div><small>LAUNCH</small><b>Go live</b><p>Grana is online, and your year of SEO begins.</p></div>
+  </div>
+  <div class="need"><h4>What we’ll need from you</h4>
+    <div class="cols">
+      <div class="check"><span>Your current menu and prices</span></div><div class="check"><span>Your Instagram page</span></div>
+      <div class="check"><span>10–20 favourite photos: pizzas, the oven, the room, the team</span></div><div class="check"><span>Access to your Google Business Profile, or we help you claim it</span></div>
+      <div class="check"><span>Your correct opening hours and phone number</span></div><div class="check"><span>Your choice of web address</span></div>
+    </div>
+  </div>
+  <div class="honest"><b><span class="redsq"></span>An honest note about this preview</b>We built this before our meeting, using public information about Grana. Real photos from your Instagram already appear on the site, but the dish photos and the making-of photos are stock images used as placeholders, and some menu items and prices are examples. Before launch, everything on the site will be Grana’s own: your dishes, your prices, your photos.</div>
+  <div class="pf"><span>GRANA × KIWIBYTES</span><span class="n">14</span></div>
+</section>
+
+<!-- ============ 15 · THANK YOU ============ -->
+<section class="page dark p15">
+  <h1>Thank you.</h1>
+  <p class="sub">Let’s open the doors online.</p>
+  <p class="txt">Grana already wins people over one slice at a time. Let’s make it just as easy to find, and just as hard to forget, online.</p>
+  <div class="three">
+    <div><b>Made by hand</b>No templates. Every page was designed for Grana.</div>
+    <div><b>One small team</b>The same people from design to launch, easy to reach.</div>
+    <div><b>Here for the year</b>We don’t disappear after launch. We grow it with you.</div>
+  </div>
+  <div class="made">
+    <div><small>MADE BY</small><span class="kiwi"><svg><use href="#kiwi"/></svg><span><b>Kiwi</b>Bytes</span></span></div>
+    <div><small>SAY HELLO</small><span class="mail">naveenad260@gmail.com</span></div>
+  </div>
+  <div class="arch a1"><img src="assets/serve.jpg" alt="" /></div>
+  <div class="arch a2"><img src="assets/tiramisu.jpg" alt="" /></div>
+  <img class="glogo" src="assets/logo-cream.png" alt="Grana Pizzeria by Abramatt" />
+  <div class="foot">PREPARED FOR GRANA PIZZERIA · NOVEMBER 2026</div>
+</section>
+
+</body>
+</html>

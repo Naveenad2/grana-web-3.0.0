@@ -3,6 +3,8 @@ import { Archivo, Courier_Prime, Homemade_Apple, Young_Serif } from "next/font/g
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { MobileDock } from "@/components/layout/MobileDock";
+import { Intro } from "@/components/layout/Intro";
+import { MotionExtras } from "@/components/ui/MotionExtras";
 import { RevealObserver } from "@/components/ui/RevealObserver";
 import { site } from "@/data/site";
 import { restaurantJsonLd, toJsonLd } from "@/lib/jsonld";
@@ -34,8 +36,10 @@ const courierPrime = Courier_Prime({
   weight: ["400", "700"],
   variable: "--font-mono",
   display: "swap",
-  preload: false,
 });
+
+// home page only, once per browser session, never with reduced motion
+const bootScript = `(function(){var d=document.documentElement;d.classList.add('js');try{if(location.pathname==='/'&&!sessionStorage.getItem('grana-intro')&&!matchMedia('(prefers-reduced-motion: reduce)').matches){d.setAttribute('data-intro','');sessionStorage.setItem('grana-intro','1')}}catch(e){}})()`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -104,8 +108,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       suppressHydrationWarning
     >
       <head>
-        {/* lets CSS hide scroll-reveal content only when JS is running */}
-        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
+        {/* runs before first paint: enables scroll reveals, and decides whether the logo intro plays */}
+        <script dangerouslySetInnerHTML={{ __html: bootScript }} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: toJsonLd(restaurantJsonLd()) }}
@@ -115,11 +119,13 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <a href="#main" className="skip-link">
           Skip to content
         </a>
+        <Intro />
         <Header />
         <main id="main">{children}</main>
         <Footer />
         <MobileDock />
         <RevealObserver />
+        <MotionExtras />
       </body>
     </html>
   );

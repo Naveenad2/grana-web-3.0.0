@@ -38,11 +38,18 @@ export function RevealObserver() {
     };
     observeAll();
 
-    // catch elements rendered after hydration (e.g. filtered menu cards)
-    const mo = new MutationObserver(observeAll);
+    // catch elements rendered after hydration (e.g. filtered menu cards). Text-only changes such as
+    // live timers are ignored, and rescans are batched to one per frame.
+    let frame = 0;
+    const mo = new MutationObserver((records) => {
+      if (frame) return;
+      const added = records.some((r) => Array.from(r.addedNodes).some((n) => n.nodeType === Node.ELEMENT_NODE));
+      if (added) frame = requestAnimationFrame(() => ((frame = 0), observeAll()));
+    });
     mo.observe(document.body, { childList: true, subtree: true });
 
     return () => {
+      cancelAnimationFrame(frame);
       io.disconnect();
       mo.disconnect();
     };

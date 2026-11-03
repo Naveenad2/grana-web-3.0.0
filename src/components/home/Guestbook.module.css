@@ -367,25 +367,37 @@
   align-content: start;
   width: 250px;
   min-height: 230px;
-  padding: 30px 20px 30px;
+  margin-bottom: 10px;
+  padding: 30px 20px 22px;
   background: #fffaf0;
   color: var(--ink);
   transform-origin: 50% -6px;
   transform: rotate(var(--sw));
-  animation: swing 4.5s ease-in-out infinite;
-  animation-delay: var(--sd);
-  box-shadow: 0 18px 24px -14px rgb(0 0 0 / 0.6);
-  /* torn zig-zag bottom edge */
-  -webkit-mask:
-    linear-gradient(#000 0 0) top / 100% calc(100% - 10px) no-repeat,
-    conic-gradient(from 135deg at 50% 0, #000 90deg, transparent 0) bottom / 14px 10px repeat-x;
-  mask:
-    linear-gradient(#000 0 0) top / 100% calc(100% - 10px) no-repeat,
-    conic-gradient(from 135deg at 50% 0, #000 90deg, transparent 0) bottom / 14px 10px repeat-x;
+  box-shadow: 0 12px 20px -14px rgb(0 0 0 / 0.6);
 }
 
-.ticket:hover {
-  animation-play-state: paused;
+/* torn zig-zag bottom edge, drawn with gradients (no mask, so it stays cheap while moving) */
+.ticket::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  height: 10px;
+  background:
+    linear-gradient(135deg, #fffaf0 50%, transparent 50%) 0 0 / 14px 10px repeat-x,
+    linear-gradient(225deg, #fffaf0 50%, transparent 50%) 0 0 / 14px 10px repeat-x;
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .ticket {
+    animation: swing 4.5s ease-in-out infinite;
+    animation-delay: var(--sd);
+  }
+
+  .ticket:hover {
+    animation-play-state: paused;
+  }
 }
 
 .tHead {

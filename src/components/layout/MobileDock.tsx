@@ -40,7 +40,7 @@ export function MobileDock() {
       </Link>
       <a href={site.links.directions} target="_blank" rel="noopener noreferrer" className={styles.item}>
         <Pin />
-        <span>Directions</span>
+        <span>Find us</span>
       </a>
     </nav>
   );

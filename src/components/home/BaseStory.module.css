@@ -19,24 +19,23 @@
 /* ---------- photo frames: curtain wipe from below + slow zoom ---------- */
 
 .frame {
-  --r: 0;
-  --z: 0;
   position: absolute;
   inset: 0;
   overflow: hidden;
-  transform: translate3d(0, calc((1 - var(--r)) * 100%), 0);
   box-shadow: 0 -40px 70px rgb(0 0 0 / 0.55);
   will-change: transform;
 }
 
-.frame:first-child {
-  --r: 1;
+/* before JS runs, later chapters wait below the fold */
+.frame:not(:first-child) {
+  transform: translate3d(0, 100%, 0);
+  visibility: hidden;
 }
 
 .media {
   position: absolute;
   inset: 0;
-  transform: translate3d(0, calc((1 - var(--r)) * -100%), 0) scale(calc(1.2 - var(--z) * 0.14));
+  transform: scale(1.2);
   will-change: transform;
 }
 
@@ -69,8 +68,7 @@
   inset: 0;
   z-index: 11;
   pointer-events: none;
-  background: radial-gradient(60% 55% at 62% 70%, rgb(255 120 40 / 0.45), transparent 70%);
-  mix-blend-mode: screen;
+  background: radial-gradient(60% 55% at 62% 70%, rgb(255 120 40 / 0.4), transparent 70%);
   opacity: 0;
   transition: opacity 0.8s var(--ease);
   animation: pulse 2.4s ease-in-out infinite;
@@ -107,7 +105,6 @@
   height: calc(2px + (var(--e) * 1px) / 5);
   border-radius: 50%;
   background: rgb(255 250 240 / 0.85);
-  filter: blur(0.4px);
   animation: drift calc(7s + (var(--e) * 0.4s)) ease-in-out infinite alternate;
   animation-delay: calc(var(--e) * -0.9s);
 }
@@ -368,7 +365,7 @@
 
 @keyframes pulse {
   50% {
-    filter: brightness(1.25);
+    transform: scale(1.08);
   }
 }
 
@@ -414,7 +411,8 @@
   .timer {
     position: absolute;
     right: var(--gutter);
-    top: calc(var(--header-h) + 90px);
+    /* below the section heading, right-aligned, clear of the chapter text */
+    top: calc(var(--header-h) + 150px);
     font-size: 64px;
   }
 
@@ -459,10 +457,17 @@
 
 /* ---------- reduced motion: cross-fade instead of wipes, no particles ---------- */
 
+@media (max-width: 860px) {
+  .embers span:nth-child(n + 11),
+  .flour span:nth-child(n + 9) {
+    display: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .frame {
+  .frame:not(:first-child) {
     transform: none;
-    opacity: var(--r);
+    opacity: 0;
   }
 
   .media {

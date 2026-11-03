@@ -32,7 +32,7 @@ export function Marquee({ items, tone = "ink", reverse, speed = 38, tilt = 0, cl
         className={`${styles.marquee} ${styles[tone]}`}
         style={{ "--tilt": `${tilt}deg`, "--speed": `${speed}s` } as CSSProperties}
       >
-        <div className={`${styles.track} ${reverse ? styles.reverse : ""}`}>
+        <div className={`${styles.track} ${reverse ? styles.reverse : ""}`} data-marquee-track>
           {run}
           {run}
         </div>

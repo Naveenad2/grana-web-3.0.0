@@ -10,6 +10,7 @@ npm run dev        # http://localhost:3000
 npm run build && npm start   # production
 npm run lint       # ESLint (Next + React hooks rules)
 npm run typecheck  # TypeScript
+npm run blur       # regenerate photo blur previews after adding/replacing images in public/images
 ```
 
 Set the live domain before deploying (used for canonical URLs, sitemap, Open Graph and JSON-LD):
@@ -44,3 +45,9 @@ On Vercel this falls back to the production URL automatically.
 - `sitemap.xml`, `robots.txt`, `manifest.webmanifest`, Open Graph image, Restaurant + Menu + Breadcrumb JSON-LD.
 
 All motion respects `prefers-reduced-motion`.
+
+## Notes
+
+- **New or replaced photos:** run `npm run blur` afterwards. It makes the tiny blurred previews that let photos fade in instead of flashing.
+- **Logo intro:** the welcome screen plays once per browser session, on the home page only, and never for visitors who turn off animations.
+- **Proposal PDF:** `proposal/Grana-Pizzeria-Website-Proposal-KiwiBytes.pdf`. Its source is `proposal/source/index.html`: edit the text, open it in Chrome, then Print → Save as PDF (the page size is built in; turn on "Background graphics").

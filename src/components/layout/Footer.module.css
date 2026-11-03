@@ -117,8 +117,10 @@
 }
 
 .giant {
+  /* GRANA sized to the content width (3.75em wide at this weight), cropped along the bottom only */
+  --g: min(calc((100vw - 2 * var(--gutter)) / 3.75), 362px);
   margin-top: clamp(40px, 6vw, 80px);
-  height: clamp(90px, 17vw, 260px);
+  height: calc(var(--g) * 0.62);
   overflow: hidden;
   text-align: center;
   user-select: none;
@@ -128,10 +130,10 @@
   display: block;
   font-family: var(--ff-display);
   font-weight: 900;
-  font-stretch: 125%;
-  font-size: clamp(130px, 26vw, 400px);
+  font-stretch: 92%;
+  font-size: var(--g);
   line-height: 0.82;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.045em;
   text-transform: uppercase;
   color: transparent;
   -webkit-text-stroke: 1.5px rgb(251 243 228 / 0.35);

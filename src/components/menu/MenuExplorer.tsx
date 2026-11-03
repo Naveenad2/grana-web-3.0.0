@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { Img } from "@/components/ui/Img";
 import { useDeferredValue, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { badgeLabel, formatPrice, type Diet, type MenuCategory, type MenuItem } from "@/data/menu";
 import { site } from "@/data/site";
@@ -187,7 +187,7 @@ export function MenuExplorer({ categories }: { categories: MenuCategory[] }) {
                       aria-haspopup="dialog"
                     >
                       <span className={styles.photo}>
-                        <Image
+                        <Img
                           src={item.image}
                           alt={item.name}
                           fill
@@ -239,7 +239,7 @@ export function MenuExplorer({ categories }: { categories: MenuCategory[] }) {
         {selected ? (
           <div className={styles.dialogInner}>
             <div className={styles.dialogPhoto}>
-              <Image src={selected.item.image} alt={selected.item.name} fill sizes="(max-width: 760px) 100vw, 520px" quality={80} />
+              <Img src={selected.item.image} alt={selected.item.name} fill sizes="(max-width: 760px) 100vw, 520px" quality={80} />
             </div>
             <div className={styles.dialogBody}>
               <p className={`script ${styles.dialogCat}`}>

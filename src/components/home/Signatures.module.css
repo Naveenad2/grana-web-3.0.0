@@ -9,38 +9,58 @@
   padding-block: clamp(70px, 9vw, 120px) 40px;
 }
 
-.section[data-pinned] .sticky {
-  position: sticky;
-  top: 0;
-  height: 100svh;
-  padding-block: 0;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-}
-
 .track {
   display: flex;
   align-items: stretch;
   gap: clamp(18px, 2vw, 30px);
   padding-inline: var(--gutter);
-}
-
-.section[data-pinned] .track {
-  width: max-content;
-  will-change: transform;
-}
-
-.section:not([data-pinned]) .track {
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   scroll-padding-inline: var(--gutter);
   padding-bottom: 28px;
   scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 }
 
-.section:not([data-pinned]) .track::-webkit-scrollbar {
+.track::-webkit-scrollbar {
   display: none;
+}
+
+.hintPinned {
+  display: none;
+}
+
+/* wide screens: pin the section and slide the track sideways as you scroll down.
+   Must match PINNED in Signatures.tsx. */
+@media (min-width: 900px) and (prefers-reduced-motion: no-preference) {
+  .section {
+    height: calc(var(--dist, 0px) + 100svh);
+  }
+
+  .sticky {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    padding-block: 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+  }
+
+  .track {
+    width: max-content;
+    overflow: visible;
+    padding-bottom: 0;
+    will-change: transform;
+  }
+
+  .hintPinned {
+    display: inline;
+  }
+
+  .hintSwipe {
+    display: none;
+  }
 }
 
 /* ---------- intro panel ---------- */
@@ -302,8 +322,10 @@
   overflow: hidden;
 }
 
-.section:not([data-pinned]) .bar {
-  display: none;
+@media (max-width: 899px), (prefers-reduced-motion: reduce) {
+  .bar {
+    display: none;
+  }
 }
 
 .bar span {
@@ -323,16 +345,28 @@
   }
 }
 
-@media (max-width: 899px) {
-  .card {
-    width: min(78vw, 340px);
+/* phones, portrait tablets, reduced motion: intro on top, cards swipe sideways beneath it */
+@media (max-width: 899px), (prefers-reduced-motion: reduce) {
+  .track {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: min(78vw, 340px);
+    grid-template-rows: auto 1fr;
+    gap: 30px clamp(16px, 2.4vw, 26px);
   }
 
   .intro {
-    width: 84vw;
+    position: sticky;
+    left: var(--gutter);
+    grid-row: 1;
+    grid-column: 1 / span var(--cols);
+    width: min(calc(100vw - 2 * var(--gutter)), 640px);
+    padding-right: 0;
   }
 
+  .card,
   .endCard {
-    width: 70vw;
+    grid-row: 2;
+    width: auto;
   }
 }

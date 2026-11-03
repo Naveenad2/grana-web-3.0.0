@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { Img } from "@/components/ui/Img";
 import { useEffect, useRef, type CSSProperties } from "react";
 import { site } from "@/data/site";
 import { ArrowUpRight, Instagram } from "@/components/ui/Icons";
@@ -97,7 +97,7 @@ export function LifeAtGrana() {
         <div className={styles.headAside} data-reveal>
           <p>
             Straight from our kitchen on 1st Cross Road: the oven, the team, the pookalam and plenty of pizza.
-            {draggable ? " Go on, drag the photos around." : ""}
+            <span className={styles.dragHint}> Go on, drag the photos around.</span>
           </p>
           {site.links.instagram ? (
             <a className="btn btn--ghost" href={site.links.instagram} target="_blank" rel="noopener noreferrer">
@@ -117,7 +117,7 @@ export function LifeAtGrana() {
             data-reveal="pop"
           >
             <div className={styles.photo}>
-              <Image
+              <Img
                 src={s.src}
                 alt={s.alt}
                 fill

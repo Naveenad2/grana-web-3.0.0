@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { Img } from "@/components/ui/Img";
 import { useCallback, useRef, useState, type CSSProperties } from "react";
 import { site } from "@/data/site";
 import { ArrowUpRight, Bag, Pan, Phone } from "@/components/ui/Icons";
@@ -48,7 +48,7 @@ export function BoxReveal() {
                 <span className={styles.floor}>
                   <span className={styles.paper} />
                   <span className={styles.pizza}>
-                    <Image
+                    <Img
                       src="/images/story/box-pizza.jpg"
                       alt=""
                       fill
@@ -71,8 +71,7 @@ export function BoxReveal() {
                 <span className={styles.lid}>
                   <span className={styles.lidOuter}>
                     <span className={styles.lidType}>
-                      <span>Gra</span>
-                      <span className={styles.lidAna}>Grana</span>
+                      <span>Grana</span>
                       <span className={styles.lidPiz}>Pizzeria</span>
                     </span>
                     <span className={`script ${styles.lidBy}`}>by Abramatt</span>

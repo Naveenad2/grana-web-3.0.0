@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { Img } from "@/components/ui/Img";
 import { useState, useSyncExternalStore, type CSSProperties } from "react";
 import { fullAddress, site } from "@/data/site";
 import { ArrowUpRight, Phone, Pin } from "@/components/ui/Icons";
@@ -45,7 +45,7 @@ export function Postcard() {
 
       <div className={styles.pcAddress}>
         <div className={styles.stamp} aria-hidden="true">
-          <Image src="/logo.png" alt="" width={140} height={140} sizes="90px" />
+          <Img src="/logo.png" alt="" width={140} height={140} sizes="90px" />
           <span>Kochi</span>
         </div>
         <svg className={styles.postmark} viewBox="0 0 120 120" aria-hidden="true">

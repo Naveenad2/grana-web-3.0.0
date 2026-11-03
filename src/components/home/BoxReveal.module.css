@@ -192,7 +192,11 @@
   transform-style: preserve-3d;
   transform-origin: top;
   transform: translateZ(var(--h)) rotateX(calc(var(--open) * 112deg));
-  transition: transform 0.5s var(--ease);
+}
+
+/* animate only when tapped; while scrolling the lid follows the scroll position directly */
+.boxBtn[data-lid] .lid {
+  transition: transform 0.6s var(--ease);
 }
 
 .lidOuter,
@@ -210,32 +214,30 @@
 
 .lidType {
   position: absolute;
-  inset: 4% 0 0 -2%;
+  inset: 9% 6% 0;
   display: grid;
+  justify-items: start;
   font-family: var(--ff-display);
   font-weight: 900;
   font-stretch: 92%;
-  font-size: calc(var(--s) * 0.38);
+  /* GRANA sized to span the lid, same proportions as the website headline */
+  font-size: calc(var(--s) * 0.86 / 3.7);
   line-height: 0.8;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.045em;
   text-transform: uppercase;
   color: var(--ink);
 }
 
-.lidAna {
-  margin-left: -0.98em;
-}
-
 .lidPiz {
-  font-size: 0.47em;
-  margin-top: 0.06em;
-  letter-spacing: -0.02em;
+  font-size: calc(3.7em / 4.56);
+  margin-top: 0.08em;
+  letter-spacing: -0.035em;
 }
 
 .lidBy {
   position: absolute;
-  left: 30%;
-  top: 41%;
+  right: 7%;
+  top: 30%;
   font-size: calc(var(--s) * 0.1);
   color: var(--cream);
   transform: rotate(-8deg);

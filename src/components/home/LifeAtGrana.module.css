@@ -35,6 +35,16 @@
   transform: rotate(-6deg) translateY(-0.1em);
 }
 
+.dragHint {
+  display: none;
+}
+
+@media (min-width: 1000px) and (hover: hover) and (pointer: fine) {
+  .dragHint {
+    display: inline;
+  }
+}
+
 .headAside {
   display: grid;
   gap: 16px;

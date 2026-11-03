@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { Img } from "@/components/ui/Img";
 import { useCallback, useRef, type CSSProperties } from "react";
 import { site } from "@/data/site";
 import { useScrollProgress, type ScrollRange } from "@/lib/useScrollProgress";
@@ -43,8 +43,15 @@ const pillars = [
 
 export function Manifesto() {
   const textRef = useRef<HTMLParagraphElement>(null);
+  const litRef = useRef(0);
+  // switch words on one at a time as you scroll; only the words that change are touched
   const onProgress = useCallback((p: number, el: HTMLElement) => {
-    el.style.setProperty("--p", p.toFixed(4));
+    const lit = Math.min(wordCount, Math.floor(p * 1.18 * wordCount));
+    if (lit === litRef.current) return;
+    const words = el.children;
+    const [from, to] = lit > litRef.current ? [litRef.current, lit] : [lit, litRef.current];
+    for (let i = from; i < to; i++) words[i]?.toggleAttribute("data-on", lit > litRef.current);
+    litRef.current = lit;
   }, []);
   useScrollProgress(textRef, onProgress, revealRange);
 
@@ -61,18 +68,17 @@ export function Manifesto() {
         <div className={styles.top}>
           <p ref={textRef} className={styles.sentence}>
             {sentence.map((t, i) => {
-              const style = { "--i": (i / wordCount).toFixed(4) } as CSSProperties;
               if (typeof t === "string") {
                 const accent = /base|fire/.test(t);
                 return (
-                  <span key={i} className={`${styles.w} ${accent ? styles.accent : ""}`} style={style}>
+                  <span key={i} className={`${styles.w} ${accent ? styles.accent : ""}`}>
                     {t}{" "}
                   </span>
                 );
               }
               return (
-                <span key={i} className={styles.pill} style={style}>
-                  <Image src={t.src} alt={t.alt} fill sizes="160px" quality={70} />
+                <span key={i} className={styles.pill}>
+                  <Img src={t.src} alt={t.alt} fill sizes="160px" quality={70} />
                 </span>
               );
             })}
@@ -80,7 +86,7 @@ export function Manifesto() {
 
           <figure className={styles.aside} data-reveal>
             <div className={styles.asideArch}>
-              <Image
+              <Img
                 src="/images/grana/dough-work.jpg"
                 alt="Grana pizzaiolos opening dough bases on the counter"
                 fill

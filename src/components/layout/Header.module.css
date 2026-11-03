@@ -55,7 +55,7 @@
   transition:
     transform 0.6s var(--ease-spring),
     box-shadow 0.4s var(--ease);
-  animation: brandIn 0.9s var(--ease-spring) backwards;
+  animation: brandIn 0.9s var(--ease-spring) var(--intro, 0s) backwards;
 }
 
 .brand::after {
@@ -292,5 +292,14 @@
   .logo {
     width: 68px;
     height: 68px;
+  }
+}
+
+/* touch devices: a solid bar instead of live blur, which shimmers over moving photos while scrolling */
+@media (hover: none), (pointer: coarse) {
+  .header[data-scrolled]:not([data-open]) .bar {
+    background: var(--cream);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
   }
 }

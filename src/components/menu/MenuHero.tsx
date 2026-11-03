@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { Img } from "@/components/ui/Img";
 import type { CSSProperties } from "react";
 import { allItems, menu } from "@/data/menu";
 import styles from "./MenuHero.module.css";
@@ -43,7 +43,7 @@ export function MenuHero() {
               >
                 <span className={styles.coinInner}>
                   <span className={styles.coinImg}>
-                    <Image src={c.image} alt="" fill sizes="130px" quality={70} />
+                    <Img src={c.image} alt="" fill sizes="130px" quality={70} />
                   </span>
                   <span className={styles.coinLabel}>{c.title}</span>
                 </span>
@@ -51,7 +51,7 @@ export function MenuHero() {
             ))}
           </div>
           <div className={styles.hub} aria-hidden="true">
-            <Image src="/logo.png" alt="" width={240} height={240} sizes="200px" className={styles.hubLogo} />
+            <Img src="/logo.png" alt="" width={240} height={240} sizes="200px" className={styles.hubLogo} />
           </div>
           <span className={`script ${styles.hubNote}`} aria-hidden="true">
             pick a slice, any slice
