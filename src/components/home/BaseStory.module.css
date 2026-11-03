@@ -1,51 +1,138 @@
-/* Real-photo "making of" sequence. JS writes --p on the section and --r / --z per frame;
-   every effect is a transform or opacity change, so it stays on the compositor. */
+/* Real-photo "making of" sequence.
+   Scrolling only picks the chapter (JS sets data-step / data-state, a handful of times per section).
+   Every visual change is a timed transform/opacity transition, so the GPU runs it and it stays smooth
+   on phones and tablets even while the page is moving. */
 
 .story {
-  --p: 0;
+  --wipe-t: 1s;
+  --wipe: cubic-bezier(0.65, 0, 0.25, 1);
   position: relative;
   height: 620svh;
   background: #120c09;
   color: var(--cream);
 }
 
+/* lvh: the photos always cover the screen, whether a phone's toolbar is showing or not */
 .sticky {
   position: sticky;
   top: 0;
-  height: 100svh;
+  height: 100lvh;
   overflow: hidden;
 }
 
-/* ---------- photo frames: curtain wipe from below + slow zoom ---------- */
+/* ---------- chapter zones: one per chapter, watched by an IntersectionObserver ---------- */
+
+.zone {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  pointer-events: none;
+  /* the chapter changes when this zone crosses the middle of the screen */
+  --span: calc(100% - 100lvh);
+}
+
+.zone:nth-child(1) {
+  top: 0;
+  height: calc(var(--span) * 0.14 + 50svh);
+}
+
+.zone:nth-child(2) {
+  top: calc(var(--span) * 0.14 + 50svh);
+  height: calc(var(--span) * 0.2);
+}
+
+.zone:nth-child(3) {
+  top: calc(var(--span) * 0.34 + 50svh);
+  height: calc(var(--span) * 0.2);
+}
+
+.zone:nth-child(4) {
+  top: calc(var(--span) * 0.54 + 50svh);
+  height: calc(var(--span) * 0.2);
+}
+
+.zone:nth-child(5) {
+  top: calc(var(--span) * 0.74 + 50svh);
+  bottom: 0;
+}
+
+/* ---------- photo frames: curtain wipe up from below, then a slow zoom ---------- */
 
 .frame {
   position: absolute;
   inset: 0;
   overflow: hidden;
-  box-shadow: 0 -40px 70px rgb(0 0 0 / 0.55);
-  will-change: transform;
-}
-
-/* before JS runs, later chapters wait below the fold */
-.frame:not(:first-child) {
-  transform: translate3d(0, 100%, 0);
   visibility: hidden;
+  transform: translate3d(0, 100%, 0);
+  transition:
+    transform var(--wipe-t) var(--wipe),
+    visibility 0s linear var(--wipe-t);
 }
 
+/* a soft shadow on the leading edge while the photo wipes in */
+.frame::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 1;
+  height: 110px;
+  background: linear-gradient(rgb(0 0 0 / 0.5), transparent);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.frame[data-state="top"]::before {
+  animation: edge var(--wipe-t) var(--wipe);
+}
+
+.frame[data-state="top"],
+.frame[data-state="under"],
+.frame[data-state="next"] {
+  visibility: visible;
+  will-change: transform;
+  transition:
+    transform var(--wipe-t) var(--wipe),
+    visibility 0s;
+}
+
+.frame[data-state="top"],
+.frame[data-state="under"],
+.frame[data-state="buried"] {
+  transform: none;
+}
+
+/* the photo moves the opposite way to its frame, so it seems to stay still while the edge sweeps over */
 .media {
   position: absolute;
   inset: 0;
-  transform: scale(1.2);
-  will-change: transform;
+  transform: translate3d(0, -100%, 0);
+  transition: transform var(--wipe-t) var(--wipe);
 }
 
-.media img {
+.frame[data-state="top"] .media,
+.frame[data-state="under"] .media,
+.frame[data-state="buried"] .media {
+  transform: none;
+}
+
+.zoom {
+  position: absolute;
+  inset: 0;
+  transform: scale(1.06);
+}
+
+.frame[data-state="top"] .zoom,
+.frame[data-state="under"] .zoom {
+  animation: kenburns 9s cubic-bezier(0.25, 0.6, 0.3, 1) both;
+}
+
+.zoom img {
   object-fit: cover;
   object-position: var(--pos);
 }
 
 @media (max-width: 860px) {
-  .media img {
+  .zoom img {
     object-position: var(--mpos);
   }
 }
@@ -61,27 +148,31 @@
     radial-gradient(120% 90% at 70% 50%, transparent 55%, rgb(0 0 0 / 0.45));
 }
 
-/* ---------- fire chapter: heat + embers ---------- */
+/* ---------- fire chapter heat + embers, flour for the dough chapters ---------- */
+/* hidden and paused unless their chapter is showing, so they cost nothing the rest of the time */
 
-.heat {
-  position: absolute;
-  inset: 0;
-  z-index: 11;
-  pointer-events: none;
-  background: radial-gradient(60% 55% at 62% 70%, rgb(255 120 40 / 0.4), transparent 70%);
-  opacity: 0;
-  transition: opacity 0.8s var(--ease);
-  animation: pulse 2.4s ease-in-out infinite;
-}
-
+.heat,
 .embers,
 .flour {
   position: absolute;
   inset: 0;
-  z-index: 12;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.8s var(--ease);
+  visibility: hidden;
+  transition:
+    opacity 0.8s var(--ease),
+    visibility 0s linear 0.8s;
+}
+
+.heat {
+  z-index: 11;
+  background: radial-gradient(60% 55% at 62% 70%, rgb(255 120 40 / 0.4), transparent 70%);
+  animation: pulse 2.4s ease-in-out infinite paused;
+}
+
+.embers,
+.flour {
+  z-index: 12;
 }
 
 .embers span {
@@ -93,7 +184,7 @@
   border-radius: 50%;
   background: #ffb347;
   box-shadow: 0 0 10px 3px rgb(255 120 30 / 0.85);
-  animation: ember calc(3.2s + (var(--e) * 0.23s)) linear infinite;
+  animation: ember calc(3.2s + (var(--e) * 0.23s)) linear infinite paused;
   animation-delay: calc(var(--e) * -0.61s);
 }
 
@@ -105,28 +196,40 @@
   height: calc(2px + (var(--e) * 1px) / 5);
   border-radius: 50%;
   background: rgb(255 250 240 / 0.85);
-  animation: drift calc(7s + (var(--e) * 0.4s)) ease-in-out infinite alternate;
+  animation: drift calc(7s + (var(--e) * 0.4s)) ease-in-out infinite alternate paused;
   animation-delay: calc(var(--e) * -0.9s);
 }
 
 .story[data-step="1"] .flour,
-.story[data-step="2"] .flour {
-  opacity: 1;
-}
-
-.story[data-step="4"] .heat {
-  opacity: 1;
-}
-
+.story[data-step="2"] .flour,
+.story[data-step="4"] .heat,
 .story[data-step="4"] .embers {
   opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 0.8s var(--ease),
+    visibility 0s;
+}
+
+.story[data-step="1"] .flour span,
+.story[data-step="2"] .flour span,
+.story[data-step="4"] .heat,
+.story[data-step="4"] .embers span {
+  animation-play-state: running;
 }
 
 /* ---------- copy ---------- */
 
+/* sized to the visible screen (svh), so nothing sits under a phone's toolbar */
+.ui {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 20;
+  height: 100svh;
+}
+
 .overlay {
   position: relative;
-  z-index: 20;
   height: 100%;
   display: grid;
   grid-template-rows: auto 1fr auto;
@@ -190,16 +293,17 @@
   color: rgb(251 243 228 / 0.86);
 }
 
-/* chapter text rises in line by line as its photo arrives */
+/* chapter text: the old chapter fades out quickly, then the new one rises in line by line */
 .num,
 .title,
 .text,
 .cta {
+  --stagger: 0s;
   opacity: 0;
   transform: translateY(40px);
   transition:
-    opacity 0.5s var(--ease),
-    transform 0.8s var(--ease);
+    opacity 0.22s ease-out,
+    transform 0.22s ease-out;
 }
 
 .story[data-step="1"] .chapter:nth-child(1),
@@ -217,18 +321,21 @@
 .story[data-step="5"] .chapter:nth-child(5) > * {
   opacity: 1;
   transform: none;
+  transition:
+    opacity 0.5s var(--ease) calc(0.24s + var(--stagger)),
+    transform 0.8s var(--ease) calc(0.24s + var(--stagger));
 }
 
 .chapter > :nth-child(2) {
-  transition-delay: 0.06s;
+  --stagger: 0.08s;
 }
 
 .chapter > :nth-child(3) {
-  transition-delay: 0.12s;
+  --stagger: 0.16s;
 }
 
 .chapter > :nth-child(4) {
-  transition-delay: 0.2s;
+  --stagger: 0.24s;
 }
 
 .timer {
@@ -270,7 +377,7 @@
 
 .rail {
   position: absolute;
-  z-index: 21;
+  z-index: 1;
   right: var(--gutter);
   top: 50%;
   display: grid;
@@ -292,8 +399,9 @@
 
 .railFill {
   background: var(--orange-hot);
-  transform: scaleY(var(--p));
+  transform: scaleY(calc((var(--step, 1) - 1) / 4));
   transform-origin: top;
+  transition: transform 0.9s var(--wipe);
 }
 
 .tick {
@@ -343,6 +451,25 @@
   transform: scale(1.3);
 }
 
+@keyframes kenburns {
+  from {
+    transform: scale(1.18);
+  }
+  to {
+    transform: scale(1.06);
+  }
+}
+
+@keyframes edge {
+  0%,
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
 @keyframes ember {
   0% {
     transform: translate(0, 0) scale(1);
@@ -369,10 +496,11 @@
   }
 }
 
-/* ---------- mobile: photo fills the screen, copy sits on a bottom gradient ---------- */
+/* ---------- phones and portrait tablets: photo fills the screen, copy on a bottom gradient ---------- */
 
 @media (max-width: 860px) {
   .story {
+    --wipe-t: 0.85s;
     height: 540svh;
   }
 
@@ -439,7 +567,7 @@
   }
 
   .railFill {
-    transform: scaleX(var(--p));
+    transform: scaleX(calc((var(--step, 1) - 1) / 4));
     transform-origin: left;
   }
 
@@ -453,25 +581,32 @@
     top: -18px;
     margin-left: -5px;
   }
-}
 
-/* ---------- reduced motion: cross-fade instead of wipes, no particles ---------- */
-
-@media (max-width: 860px) {
   .embers span:nth-child(n + 11),
   .flour span:nth-child(n + 9) {
     display: none;
   }
 }
 
+/* ---------- reduced motion: simple cross-fade, no zoom or particles ---------- */
+
 @media (prefers-reduced-motion: reduce) {
-  .frame:not(:first-child) {
-    transform: none;
+  .frame,
+  .frame .media {
+    transform: none !important;
+  }
+
+  .frame {
     opacity: 0;
   }
 
-  .media {
-    transform: none;
+  .frame[data-state="top"],
+  .frame[data-state="under"] {
+    opacity: 1;
+  }
+
+  .zoom {
+    animation: none !important;
   }
 
   .embers,

@@ -2,9 +2,8 @@
 
 import { Img } from "@/components/ui/Img";
 import Link from "next/link";
-import { useCallback, useRef, type CSSProperties } from "react";
+import { useEffect, useRef, type CSSProperties } from "react";
 import { ArrowRight } from "@/components/ui/Icons";
-import { useScrollProgress } from "@/lib/useScrollProgress";
 import styles from "./BaseStory.module.css";
 
 const chapters = [
@@ -56,59 +55,120 @@ const chapters = [
 ];
 
 const N = chapters.length;
-const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
+const FIRE = 4;
 
+/**
+ * Where each photo sits relative to the current chapter. Only "top", "under" and "next" are kept
+ * ready on the graphics card; everything else is hidden, so phones never hold more than three photos.
+ */
+function frameState(k: number, step: number) {
+  if (k === step) return "top";
+  if (k === step - 1) return "under";
+  if (k === step + 1) return "next";
+  return k < step ? "buried" : "below";
+}
+
+/**
+ * The "making of" story. Scrolling only decides which chapter is showing (via IntersectionObserver
+ * zones, so no code runs per scroll frame). The photo wipes, zooms and text are timed CSS
+ * transitions that run on the GPU, which keeps them smooth on phones and tablets while scrolling.
+ */
 export function BaseStory() {
   const ref = useRef<HTMLElement>(null);
   const timerRef = useRef<HTMLSpanElement>(null);
-  const railRef = useRef<HTMLElement>(null);
-  const framesRef = useRef<HTMLElement[] | null>(null);
 
-  // Writes transforms straight onto the photo frames. Frames that are off-screen or fully covered
-  // are hidden, so a phone only ever paints the one or two photos you can actually see.
-  const onProgress = useCallback((p: number, el: HTMLElement) => {
-    const frames = (framesRef.current ??= Array.from(el.querySelectorAll<HTMLElement>("[data-frame]")));
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const seg = p * N;
-    // each photo wipes in around the boundary with the previous chapter, then slowly zooms out
-    const reveal = frames.map((_, k) => (k === 0 ? 1 : clamp01((seg - (k - 0.32)) / 0.5)));
-    frames.forEach((frame, k) => {
-      const r = reveal[k];
-      const covered = k < N - 1 && reveal[k + 1] >= 1;
-      const show = r > 0 && !covered;
-      frame.style.visibility = show ? "visible" : "hidden";
-      if (!show) return;
-      const media = frame.firstElementChild as HTMLElement;
-      if (reduced) {
-        frame.style.opacity = r.toFixed(3);
+  useEffect(() => {
+    const section = ref.current;
+    if (!section) return;
+    const frames = Array.from(section.querySelectorAll<HTMLElement>("[data-frame]"));
+    const zones = Array.from(section.querySelectorAll<HTMLElement>("[data-zone]"));
+    let raf = 0;
+
+    const countTimer = (step: number) => {
+      cancelAnimationFrame(raf);
+      const el = timerRef.current;
+      if (!el) return;
+      if (step !== FIRE) {
+        el.textContent = step > FIRE ? "90" : "00";
         return;
       }
-      const zoom = clamp01((seg - (k - 0.32)) / 1.4);
-      frame.style.transform = `translate3d(0,${((1 - r) * 100).toFixed(3)}%,0)`;
-      media.style.transform = `translate3d(0,${((r - 1) * 100).toFixed(3)}%,0) scale(${(1.2 - zoom * 0.14).toFixed(4)})`;
-    });
-    railRef.current?.style.setProperty("--p", p.toFixed(4));
-    const step = String(Math.min(N, Math.floor(seg) + 1));
-    if (el.dataset.step !== step) el.dataset.step = step;
-    const secs = String(Math.round(clamp01(seg - 3) * 90)).padStart(2, "0");
-    if (timerRef.current && timerRef.current.textContent !== secs) timerRef.current.textContent = secs;
+      const start = performance.now();
+      const tick = (now: number) => {
+        const t = Math.min(1, (now - start) / 2400);
+        el.textContent = String(Math.round(90 * (1 - Math.pow(1 - t, 3)))).padStart(2, "0");
+        if (t < 1) raf = requestAnimationFrame(tick);
+      };
+      raf = requestAnimationFrame(tick);
+    };
+
+    const setStep = (step: number) => {
+      if (section.dataset.step === String(step)) return;
+      section.dataset.step = String(step);
+      section.style.setProperty("--step", String(step));
+      frames.forEach((f, i) => (f.dataset.state = frameState(i + 1, step)));
+      countTimer(step);
+    };
+
+    // each zone is one chapter's stretch of scrolling; whichever crosses the middle of the screen wins
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) setStep(Number((e.target as HTMLElement).dataset.zone));
+        }
+      },
+      { rootMargin: "-50% 0px -50% 0px" },
+    );
+    zones.forEach((z) => io.observe(z));
+
+    // fetch and decode every photo well before the section arrives, so none of them flashes in
+    const imgs = Array.from(section.querySelectorAll<HTMLImageElement>("[data-frame] img"));
+    const warm = new IntersectionObserver(
+      ([e]) => {
+        if (!e.isIntersecting) return;
+        warm.disconnect();
+        for (const img of imgs) {
+          img.loading = "eager";
+          img.decode?.().catch(() => {});
+        }
+      },
+      { rootMargin: "150% 0px 150% 0px" },
+    );
+    warm.observe(section);
+
+    return () => {
+      io.disconnect();
+      warm.disconnect();
+      cancelAnimationFrame(raf);
+    };
   }, []);
-  useScrollProgress(ref, onProgress);
 
   return (
     <section ref={ref} className={styles.story} data-step="1" aria-labelledby="story-making-title">
+      {chapters.map((c, i) => (
+        <div key={c.label} className={styles.zone} data-zone={i + 1} aria-hidden="true" />
+      ))}
+
       <div className={styles.sticky}>
         {chapters.map((c, k) => (
-          <div key={c.image} className={styles.frame} data-frame style={{ zIndex: k + 1 } as CSSProperties}>
+          <div
+            key={c.image}
+            className={styles.frame}
+            data-frame
+            data-state={frameState(k + 1, 1)}
+            style={{ zIndex: k + 1 } as CSSProperties}
+          >
             <div className={styles.media}>
-              <Img
-                src={c.image}
-                alt={c.alt}
-                fill
-                sizes="100vw"
-                quality={70}
-                style={{ "--pos": c.position, "--mpos": c.mobilePosition } as CSSProperties}
-              />
+              <div className={styles.zoom}>
+                <Img
+                  src={c.image}
+                  alt={c.alt}
+                  fill
+                  sizes="100vw"
+                  quality={70}
+                  blur={false}
+                  style={{ "--pos": c.position, "--mpos": c.mobilePosition } as CSSProperties}
+                />
+              </div>
             </div>
           </div>
         ))}
@@ -126,46 +186,49 @@ export function BaseStory() {
           ))}
         </div>
 
-        <div className={`container ${styles.overlay}`}>
-          <div className={styles.head}>
-            <p className="kicker">N°02 · The making of</p>
-            <h2 id="story-making-title" className={styles.headTitle}>
-              It&rsquo;s all about <span className="script">the base</span>
-            </h2>
+        {/* sized to the visible screen, so text and the progress rail never sit under a phone's toolbar */}
+        <div className={styles.ui}>
+          <div className={`container ${styles.overlay}`}>
+            <div className={styles.head}>
+              <p className="kicker">N°02 · The making of</p>
+              <h2 id="story-making-title" className={styles.headTitle}>
+                It&rsquo;s all about <span className="script">the base</span>
+              </h2>
+            </div>
+
+            <ol className={styles.chapters}>
+              {chapters.map((c, i) => (
+                <li key={c.title} className={styles.chapter}>
+                  <span className={styles.num} aria-hidden="true">
+                    0{i + 1}
+                  </span>
+                  <h3 className={styles.title}>{c.title}</h3>
+                  <p className={styles.text}>{c.text}</p>
+                  {i === N - 1 ? (
+                    <Link href="/menu" className={`btn btn--orange ${styles.cta}`}>
+                      Taste it yourself <ArrowRight />
+                    </Link>
+                  ) : null}
+                </li>
+              ))}
+            </ol>
+
+            <p className={styles.timer} aria-hidden="true">
+              <span ref={timerRef}>00</span>
+              <small>seconds in the oven</small>
+            </p>
           </div>
 
-          <ol className={styles.chapters}>
+          <nav className={styles.rail} aria-hidden="true">
+            <span className={styles.railFill} />
             {chapters.map((c, i) => (
-              <li key={c.title} className={styles.chapter}>
-                <span className={styles.num} aria-hidden="true">
-                  0{i + 1}
-                </span>
-                <h3 className={styles.title}>{c.title}</h3>
-                <p className={styles.text}>{c.text}</p>
-                {i === N - 1 ? (
-                  <Link href="/menu" className={`btn btn--orange ${styles.cta}`}>
-                    Taste it yourself <ArrowRight />
-                  </Link>
-                ) : null}
-              </li>
+              <span key={c.label} className={styles.tick} data-n={i + 1}>
+                <i />
+                {c.label}
+              </span>
             ))}
-          </ol>
-
-          <p className={styles.timer} aria-hidden="true">
-            <span ref={timerRef}>00</span>
-            <small>seconds in the oven</small>
-          </p>
+          </nav>
         </div>
-
-        <nav ref={railRef} className={styles.rail} aria-hidden="true">
-          <span className={styles.railFill} />
-          {chapters.map((c, i) => (
-            <span key={c.label} className={styles.tick} data-n={i + 1}>
-              <i />
-              {c.label}
-            </span>
-          ))}
-        </nav>
       </div>
     </section>
   );
