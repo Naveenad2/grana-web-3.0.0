@@ -90,6 +90,15 @@ export function Footer() {
           © {YEAR} {site.name}
         </p>
         <p>Panampilly Nagar · Kochi · Kerala</p>
+        <a
+          className={styles.credit}
+          href={`mailto:${site.developer.email}`}
+          aria-label={`Website designed and developed by ${site.developer.name}, ${site.developer.brand}`}
+        >
+          <span>Designed &amp; developed by</span>
+          <Img src="/intcod-cream.png" alt="" width={320} height={196} sizes="40px" className={styles.creditLogo} />
+          <span className={styles.creditName}>{site.developer.name}</span>
+        </a>
       </div>
     </footer>
   );

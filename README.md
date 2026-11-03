@@ -50,4 +50,4 @@ All motion respects `prefers-reduced-motion`.
 
 - **New or replaced photos:** run `npm run blur` afterwards. It makes the tiny blurred previews that let photos fade in instead of flashing.
 - **Logo intro:** the welcome screen plays once per browser session, on the home page only, and never for visitors who turn off animations.
-- **Proposal PDF:** `proposal/Grana-Pizzeria-Website-Proposal-KiwiBytes.pdf`. Its source is `proposal/source/index.html`: edit the text, open it in Chrome, then Print → Save as PDF (the page size is built in; turn on "Background graphics").
+- **Proposal PDF:** `proposal/Grana-Pizzeria-Website-Proposal-IntCod.pdf`. Its source is `proposal/source/index.html`: edit the text, open it in Chrome, then Print → Save as PDF (the page size is built in; turn on "Background graphics").

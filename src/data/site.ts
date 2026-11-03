@@ -48,6 +48,7 @@ export const site = {
     instagram: "" as string,
   },
   rating: { value: 4.5, count: 600, source: "Google" },
+  developer: { name: "Naveen A D", brand: "IntCod", email: "intcod360@gmail.com" },
 } as const;
 
 /**

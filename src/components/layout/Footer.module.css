@@ -145,14 +145,64 @@
 .legal {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 8px 16px;
   padding-top: 18px;
   border-top: 1px solid rgb(251 243 228 / 0.16);
   font-family: var(--ff-mono);
   font-size: 12.5px;
   letter-spacing: 0.06em;
   color: rgb(251 243 228 / 0.6);
+}
+
+/* developer credit */
+.credit {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px rgb(251 243 228 / 0.16);
+  white-space: nowrap;
+  transition:
+    color 0.3s var(--ease),
+    box-shadow 0.3s var(--ease);
+}
+
+.credit:hover {
+  color: var(--cream);
+  box-shadow: inset 0 0 0 1px rgb(251 243 228 / 0.45);
+}
+
+.creditLogo {
+  width: auto;
+  height: 17px;
+}
+
+.creditName {
+  color: var(--cream);
+  font-weight: 700;
+}
+
+@media (max-width: 640px) {
+  .legal {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .credit {
+    margin-top: 6px;
+  }
+}
+
+@media (max-width: 360px) {
+  .credit {
+    white-space: normal;
+    flex-wrap: wrap;
+    row-gap: 4px;
+    border-radius: 16px;
+  }
 }
 
 @media (max-width: 960px) {
